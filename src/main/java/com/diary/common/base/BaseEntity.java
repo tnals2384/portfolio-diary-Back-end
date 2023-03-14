@@ -1,4 +1,4 @@
-package com.ooogaoooga.common.base;
+package com.diary.common.base;
 
 
 import lombok.Getter;

@@ -1,13 +1,13 @@
-package com.ooogaoooga;
+package com.diary;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OoogaOoogaApplication {
+public class DiaryApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OoogaOoogaApplication.class, args);
+		SpringApplication.run(DiaryApplication.class, args);
 	}
 
 }

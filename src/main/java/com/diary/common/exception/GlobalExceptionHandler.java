@@ -1,4 +1,4 @@
-package com.ooogaoooga.common.exception;
+package com.diary.common.exception;
 
 
 import lombok.extern.slf4j.Slf4j;

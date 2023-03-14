@@ -1,4 +1,4 @@
-package com.ooogaoooga.common.base;
+package com.diary.common.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

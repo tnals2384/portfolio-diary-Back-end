@@ -1,8 +1,7 @@
-package com.ooogaoooga.common.exception;
+package com.diary.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.ooogaoooga.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
