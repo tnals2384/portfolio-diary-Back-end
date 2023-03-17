@@ -22,11 +22,11 @@ public class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
     private BaseStatus status = BaseStatus.ACTIVE;
 
     /**
      * 수정 시간 업데이트
-     * @param updatedAt
      */
     public void updateUpdatedAt(@NotNull LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
