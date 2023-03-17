@@ -1,4 +1,4 @@
-package com.diary.domain.Member.Service;
+package com.diary.domain.member.Service;
 
 public interface MemberService {
 }
