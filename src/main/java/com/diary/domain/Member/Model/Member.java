@@ -1,4 +1,4 @@
-package com.diary.domain.member.Model;
+package com.diary.domain.member.model;
 
 import com.diary.common.base.BaseEntity;
 import lombok.AccessLevel;

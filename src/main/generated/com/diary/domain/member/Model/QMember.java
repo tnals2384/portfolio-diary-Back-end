@@ -1,4 +1,4 @@
-package com.diary.domain.member.Model;
+package com.diary.domain.member.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
