@@ -1,6 +1,6 @@
-package com.diary.domain.Member.Controller;
+package com.diary.domain.member.Controller;
 
-import com.diary.domain.Member.Service.MemberService;
+import com.diary.domain.member.Service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,4 +1,4 @@
-package com.diary.domain.Member.Repository;
+package com.diary.domain.member.Repository;
 
 public interface MemberRepositoryCustom {
 }

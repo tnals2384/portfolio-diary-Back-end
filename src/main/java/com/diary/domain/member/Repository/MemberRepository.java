@@ -1,6 +1,6 @@
-package com.diary.domain.Member.Repository;
+package com.diary.domain.member.Repository;
 
-import com.diary.domain.Member.Model.Member;
+import com.diary.domain.member.Model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepositoryCustom {

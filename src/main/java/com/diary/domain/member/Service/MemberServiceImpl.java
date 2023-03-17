@@ -1,6 +1,6 @@
-package com.diary.domain.Member.Service;
+package com.diary.domain.member.Service;
 
-import com.diary.domain.Member.Repository.MemberRepository;
+import com.diary.domain.member.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

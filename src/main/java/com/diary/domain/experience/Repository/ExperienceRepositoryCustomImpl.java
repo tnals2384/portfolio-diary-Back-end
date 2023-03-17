@@ -1,10 +1,10 @@
-package com.diary.domain.Member.Repository;
+package com.diary.domain.experience.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
+public class ExperienceRepositoryCustomImpl implements ExperienceRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
 }

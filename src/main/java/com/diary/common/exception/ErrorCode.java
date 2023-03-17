@@ -28,6 +28,7 @@ public enum ErrorCode {
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
      */
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found."),
+    TAG_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "태그 타입을 확인해주세요."),
 
     /*
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
