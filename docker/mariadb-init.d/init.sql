@@ -1,0 +1,5 @@
+CREATE USER 'admin'@'localhost' IDENTIFIED BY '12192152';
+CREATE USER 'admin'@'%' IDENTIFIED BY '12192152';
+
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';

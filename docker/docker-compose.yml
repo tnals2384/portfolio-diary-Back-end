@@ -3,12 +3,11 @@ version: "3"
 services:
   mariadb:
     image: mariadb
-    container_name: "oooga_db"
+    container_name: "database"
     ports:
-      - '3306:3306'
+      - '13306:3306'
     volumes:
       - ./mariadb-init.d:/docker-entrypoint-initdb.d
-    env_file: ../.env
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
@@ -19,4 +18,3 @@ services:
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
     restart: always
-
