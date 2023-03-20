@@ -2,15 +2,15 @@ package com.diary.domain.experience.model;
 
 import com.diary.common.base.BaseEntity;
 import com.diary.domain.post.model.Post;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+
+@Builder
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Experience extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +26,6 @@ public class Experience extends BaseEntity {
 
     @Column(nullable = false)
     private String contents;
+
 
 }
