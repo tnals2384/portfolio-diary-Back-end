@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Experience extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
