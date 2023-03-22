@@ -8,6 +8,7 @@ import com.diary.domain.tag.model.TagType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -23,7 +24,6 @@ public class CreatePostRequest {
     private String title;
     @NotNull
     private LocalDateTime beginAt;
-
     @NotNull
     private LocalDateTime finishAt;
 
@@ -31,7 +31,6 @@ public class CreatePostRequest {
 
     private Map<@NotEmpty String, @NotBlank String> experiences;
 
-    //private List<File> files;
 
     public Post toEntity(Member member) {
         return Post.builder()

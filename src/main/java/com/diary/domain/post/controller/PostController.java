@@ -9,6 +9,7 @@ import com.diary.domain.post.model.dto.CreatePostResponse;
 import com.diary.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -20,9 +21,11 @@ public class PostController {
     private final PostService postService;
     @PostMapping("/api/posts")
     public BaseResponse<CreatePostResponse> createPost(
-            @RequestParam @Valid Long memberId, @RequestBody @Valid CreatePostRequest createPostRequest) throws IOException {
+            @RequestParam @Valid Long memberId,
+            @RequestPart @Valid CreatePostRequest createPostRequest,
+            @RequestPart(value="image", required=false) List<MultipartFile> files) throws IOException {
 
-        return new BaseResponse<>(postService.createPost(memberId,createPostRequest));
+        return new BaseResponse<>(postService.createPost(memberId,createPostRequest,files));
     }
 
 }

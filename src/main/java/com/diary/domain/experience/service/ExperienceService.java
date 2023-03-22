@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface ExperienceService {
-    public CreateExperienceResponse createExperience(Long postId, Map<String,String> experiences) throws IOException;
+    CreateExperienceResponse createExperience(Long postId, Map<String,String> experiences) throws IOException;
 }
