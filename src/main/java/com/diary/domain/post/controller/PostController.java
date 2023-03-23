@@ -1,9 +1,6 @@
 package com.diary.domain.post.controller;
 
 import com.diary.common.base.BaseResponse;
-import com.diary.domain.experience.model.dto.CreateExperienceRequest;
-import com.diary.domain.experience.model.dto.CreateExperienceResponse;
-import com.diary.domain.experience.service.ExperienceService;
 import com.diary.domain.post.model.dto.CreatePostRequest;
 import com.diary.domain.post.model.dto.CreatePostResponse;
 import com.diary.domain.post.service.PostService;
@@ -19,13 +16,14 @@ import java.util.List;
 @RestController
 public class PostController {
     private final PostService postService;
+
     @PostMapping("/api/posts")
     public BaseResponse<CreatePostResponse> createPost(
             @RequestParam @Valid Long memberId,
             @RequestPart @Valid CreatePostRequest createPostRequest,
-            @RequestPart(value="image", required=false) List<MultipartFile> files) throws IOException {
+            @RequestPart(value = "file", required = false) List<MultipartFile> files) throws IOException {
 
-        return new BaseResponse<>(postService.createPost(memberId,createPostRequest,files));
+        return new BaseResponse<>(postService.createPost(memberId, createPostRequest, files));
     }
 
 }

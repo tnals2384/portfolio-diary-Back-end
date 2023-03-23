@@ -3,19 +3,13 @@ package com.diary.domain.experience.service;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.model.Experience;
-import com.diary.domain.experience.model.dto.CreateExperienceRequest;
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
 import com.diary.domain.experience.repository.ExperienceRepository;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
-import com.diary.domain.tag.model.Tag;
-import com.diary.domain.tag.model.TagType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,14 +20,15 @@ import java.util.Map;
 public class ExperienceServiceImpl implements ExperienceService {
     private final ExperienceRepository experienceRepository;
     private final PostRepository postRepository;
+
     @Override
-    public CreateExperienceResponse createExperience(Long postId, Map<String,String> experiences) throws IOException {
+    public CreateExperienceResponse createExperience(Long postId, Map<String, String> experiences) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
-                ()-> new RestApiException(ErrorCode.NOT_FOUND));
+                () -> new RestApiException(ErrorCode.NOT_FOUND));
 
-        List<Long> exList= new LinkedList<>();
+        List<Long> exList = new LinkedList<>();
 
-        for(Map.Entry<String,String> ex: experiences.entrySet()) {
+        for (Map.Entry<String, String> ex : experiences.entrySet()) {
             Experience experience = experienceRepository.save(Experience.builder()
                     .title(ex.getKey())
                     .contents(ex.getValue())

@@ -3,12 +3,10 @@ package com.diary.domain.tag.repository;
 import static com.diary.domain.tag.model.QTag.tag;
 
 import com.diary.domain.post.model.Post;
-import com.diary.domain.tag.model.Tag;
 import com.diary.domain.tag.model.TagType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class TagRepositoryCustomImpl implements TagRepositoryCustom {
@@ -27,7 +25,4 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         tag.post.eq(post)
                 ).fetchOne();
     }
-
-
-
 }

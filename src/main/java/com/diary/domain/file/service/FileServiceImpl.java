@@ -25,10 +25,11 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
     private final PostRepository postRepository;
+
     public UploadFileResponse uploadFiles(Long postId, List<MultipartFile> files) throws IOException {
 
         List<Long> fileList = new ArrayList<>();
-        Post post = postRepository.findById(postId).orElseThrow(()-> new RestApiException(ErrorCode.NOT_FOUND));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
 
         //오늘날짜 추출
         LocalDateTime now = LocalDateTime.now();
@@ -41,26 +42,26 @@ public class FileServiceImpl implements FileService {
                 + File.separator + File.separator;
 
         //파일 세부 경로 지정
-        String path = absolutePath + "files"+ File.separator + current_date;
+        String path = absolutePath + "files" + File.separator + current_date;
 
         //디렉토리가 존재하지 않으면 mkdirs로 생성
-        if(!new File(path).exists()) {
+        if (!new File(path).exists()) {
             try {
                 new File(path).mkdirs();
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }
 
-        for(MultipartFile f : files) {
+        for (MultipartFile f : files) {
             // 파일의 확장자 추출
             String originalFileExtension;
             String contentType = StringUtils.getFilenameExtension((f.getOriginalFilename()));
             if (ObjectUtils.isEmpty(contentType))
                 break;
             else
-                originalFileExtension ="."+contentType;
+                originalFileExtension = "." + contentType;
 
             // 파일명 중복 피하고자 나노초까지 얻어와 지정
             String new_file_name = System.nanoTime() + originalFileExtension;
@@ -76,7 +77,7 @@ public class FileServiceImpl implements FileService {
             fileList.add(fileRepository.save(newFile).getId());
 
             //업로드 한 파일 데이터를 지정한 파일에 저장
-            File file = new File(path+File.separator+new_file_name);
+            File file = new File(path + File.separator + new_file_name);
             f.transferTo(file);
 
             // 파일 권한 설정(쓰기, 읽기)

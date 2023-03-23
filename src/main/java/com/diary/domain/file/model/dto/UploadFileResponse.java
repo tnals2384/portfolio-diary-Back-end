@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UploadFileResponse {
     List<Long> files;
+
     public static UploadFileResponse of(List<Long> fileIds) {
         return new UploadFileResponse(fileIds);
     }

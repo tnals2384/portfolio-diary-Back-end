@@ -34,10 +34,10 @@ public class File extends BaseEntity {
     private Long fileSize;
 
     @Builder
-    public File(Post post,String origFileName, String filePath,Long fileSize) {
-        this.post=post;
+    public File(Post post, String origFileName, String filePath, Long fileSize) {
+        this.post = post;
         this.origFileName = origFileName;
         this.filePath = filePath;
-        this.fileSize=fileSize;
+        this.fileSize = fileSize;
     }
 }
