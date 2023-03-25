@@ -7,11 +7,9 @@ import lombok.*;
 import javax.persistence.*;
 
 
-@Builder
 @Entity
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Experience extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +26,20 @@ public class Experience extends BaseEntity {
     @Column(nullable = false)
     private String contents;
 
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private Experience(String title, String contents,Post post) {
+        this.title = title;
+        this.contents = contents;
+        this.post = post;
+    }
+
+    public static Experience newExperience(String title, String contents, Post post){
+        return Experience.builder()
+                .title(title)
+                .contents(contents)
+                .post(post)
+                .build();
+    }
 
 }

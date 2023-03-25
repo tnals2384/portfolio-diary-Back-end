@@ -8,7 +8,6 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,12 +65,9 @@ public class FileServiceImpl implements FileService {
             // 파일명 중복 피하고자 나노초까지 얻어와 지정
             String new_file_name = System.nanoTime() + originalFileExtension;
 
-            com.diary.domain.file.model.File newFile = com.diary.domain.file.model.File.builder()
-                    .post(post)
-                    .origFileName(f.getOriginalFilename())
-                    .filePath(path + File.separator + new_file_name)
-                    .fileSize(f.getSize())
-                    .build();
+            com.diary.domain.file.model.File newFile =
+                    com.diary.domain.file.model.File.newFile(post,
+                            f.getOriginalFilename(),path+File.separator+new_file_name);
 
             //file repo에 save
             fileList.add(fileRepository.save(newFile).getId());

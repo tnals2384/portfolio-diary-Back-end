@@ -34,10 +34,8 @@ public class TagServiceImpl implements TagService {
 
         for (Map.Entry<String, String> t : tags.entrySet()) {
             TagType type = TagType.of(t.getKey());
-            Tag tag = tagRepository.save(Tag.builder()
-                    .tagType(type)
-                    .tagName(t.getValue())
-                    .post(post).build());
+
+            Tag tag = tagRepository.save(Tag.newTag(type,t.getValue(),post));
 
             tagList.add(tag.getId());
         }

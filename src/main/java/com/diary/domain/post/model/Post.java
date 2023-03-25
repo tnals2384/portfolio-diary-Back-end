@@ -7,11 +7,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Builder
+
 @Entity
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +30,21 @@ public class Post extends BaseEntity {
     @Column(nullable = false, name = "finish_at")
     private LocalDateTime finishAt;
 
+    @Builder(access = AccessLevel.PRIVATE)
+    private Post(Member member, String title, LocalDateTime beginAt,LocalDateTime finishAt) {
+       this.member=member;
+       this.title=title;
+       this.beginAt=beginAt;
+       this.finishAt=finishAt;
+    }
+
+    public static Post newPost(Member member, String title, LocalDateTime beginAt,LocalDateTime finishAt) {
+        return Post.builder()
+                .member(member)
+                .title(title)
+                .beginAt(beginAt)
+                .finishAt(finishAt)
+                .build();
+    }
 
 }

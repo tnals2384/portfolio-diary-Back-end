@@ -33,11 +33,18 @@ public class File extends BaseEntity {
 
     private Long fileSize;
 
-    @Builder
-    public File(Post post, String origFileName, String filePath, Long fileSize) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private File(Post post, String origFileName, String filePath) {
         this.post = post;
         this.origFileName = origFileName;
         this.filePath = filePath;
-        this.fileSize = fileSize;
     }
+
+    public static  File newFile(Post post, String origFileName, String filePath) {
+        return File.builder()
+                .post(post)
+                .origFileName(origFileName)
+                .filePath(filePath).build();
+    }
+
 }

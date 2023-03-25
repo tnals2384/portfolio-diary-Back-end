@@ -29,10 +29,8 @@ public class ExperienceServiceImpl implements ExperienceService {
         List<Long> exList = new LinkedList<>();
 
         for (Map.Entry<String, String> ex : experiences.entrySet()) {
-            Experience experience = experienceRepository.save(Experience.builder()
-                    .title(ex.getKey())
-                    .contents(ex.getValue())
-                    .post(post).build());
+            Experience experience = experienceRepository.save(
+                    Experience.newExperience(ex.getKey(),ex.getValue(),post));
             exList.add(experience.getId());
         }
         return CreateExperienceResponse.of(exList);

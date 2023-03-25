@@ -29,11 +29,19 @@ public class Tag extends BaseEntity {
     @Column(nullable = false)
     private String tagName;
 
-   @Builder
+   @Builder(access = AccessLevel.PRIVATE)
     private Tag(TagType tagType,String tagName, Post post) {
        this.tagType=tagType;
        this.tagName= tagName;
        this.post=post;
+   }
+
+   public static  Tag newTag(TagType tagType,String tagName, Post post) {
+       return Tag.builder()
+               .tagType(tagType)
+               .tagName(tagName)
+               .post(post)
+               .build();
    }
 
 }
