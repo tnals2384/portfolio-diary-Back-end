@@ -1,87 +1,95 @@
 package com.diary.domain.file.service;
 
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
+import com.diary.domain.file.model.File;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.file.repository.FileRepository;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+@Component
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
+
+    private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
     private final FileRepository fileRepository;
     private final PostRepository postRepository;
 
+    @Override
+    @Transactional
     public UploadFileResponse uploadFiles(Long postId, List<MultipartFile> files) throws IOException {
 
         List<Long> fileList = new ArrayList<>();
+
         Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
 
-        //오늘날짜 추출
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern("yyyyMMdd");
-        String current_date = now.format(dateTimeFormatter);
-
-        //파일 저장 절대 경로
-        String absolutePath = new File("").getAbsolutePath()
-                + File.separator + File.separator;
-
-        //파일 세부 경로 지정
-        String path = absolutePath + "files" + File.separator + current_date;
-
-        //디렉토리가 존재하지 않으면 mkdirs로 생성
-        if (!new File(path).exists()) {
-            try {
-                new File(path).mkdirs();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
 
         for (MultipartFile f : files) {
-            // 파일의 확장자 추출
-            String originalFileExtension;
-            String contentType = StringUtils.getFilenameExtension((f.getOriginalFilename()));
-            if (ObjectUtils.isEmpty(contentType))
-                break;
-            else
-                originalFileExtension = "." + contentType;
 
-            // 파일명 중복 피하고자 나노초까지 얻어와 지정
-            String new_file_name = System.nanoTime() + originalFileExtension;
+            String fileName = "files" +"/"+ createFileName(f.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(f.getContentType());
 
-            com.diary.domain.file.model.File newFile =
-                    com.diary.domain.file.model.File.newFile(post,
-                            f.getOriginalFilename(),path+File.separator+new_file_name);
+            //s3에 file 업로드
+            amazonS3Client.putObject(new PutObjectRequest(bucket,fileName,f.getInputStream(),objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            //file repo에 save
+            //저장된 파일 경로 url
+            String url = amazonS3Client.getUrl(bucket,fileName).toString();
+
+            //File 생성
+            File newFile = File.newFile(post,
+                            f.getOriginalFilename(), url);
+
+            //file Repository에 save
             fileList.add(fileRepository.save(newFile).getId());
 
-            //업로드 한 파일 데이터를 지정한 파일에 저장
-            File file = new File(path + File.separator + new_file_name);
-            f.transferTo(file);
-
-            // 파일 권한 설정(쓰기, 읽기)
-            file.setWritable(true);
-            file.setReadable(true);
         }
 
         return UploadFileResponse.of(fileList);
     }
+
+
+    //파일 이름 생성
+    private String createFileName(String origFileName) {
+        return UUID.randomUUID().toString().concat(getFileExtension(origFileName));
+    }
+
+
+    //파일 확장자 get
+    private String getFileExtension(String fileName) {
+        try {
+            return fileName.substring(fileName.lastIndexOf("."));
+        }
+        catch (StringIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다.", fileName));
+        }
+    }
+
+
 
 }

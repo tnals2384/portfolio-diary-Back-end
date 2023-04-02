@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostService {
         }
 
         //file 저장
-        if (!CollectionUtils.isEmpty(files)) {
+        if (!files.isEmpty()) {
             fileService.uploadFiles(post.getId(), files);
         }
 

@@ -22,16 +22,12 @@ public class File extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    /*@Column(nullable = false)
-    private String url;*/
 
     @Column(nullable = false)
     private String origFileName;  // 파일 원본명
 
     @Column(nullable = false)
     private String filePath;  // 파일 저장 경로
-
-    private Long fileSize;
 
     @Builder(access = AccessLevel.PRIVATE)
     private File(Post post, String origFileName, String filePath) {
