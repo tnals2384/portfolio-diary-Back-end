@@ -19,12 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -50,22 +48,22 @@ public class FileServiceImpl implements FileService {
 
         for (MultipartFile f : files) {
 
-            String fileName = "files" +"/"+ createFileName(f.getOriginalFilename());
+            String fileName = "files" + "/" + createFileName(f.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(f.getContentType());
 
             //s3에 file 업로드
-            amazonS3Client.putObject(new PutObjectRequest(bucket,fileName,f.getInputStream(),objectMetadata)
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, f.getInputStream(), objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
             //저장된 파일 경로 url
-            String url = amazonS3Client.getUrl(bucket,fileName).toString();
+            String url = amazonS3Client.getUrl(bucket, fileName).toString();
 
             //File 생성
             File newFile = File.newFile(post,
-                            f.getOriginalFilename(), url);
+                    f.getOriginalFilename(), url);
 
-            //file Repository에 save
+            //file repository에 save
             fileList.add(fileRepository.save(newFile).getId());
 
         }
@@ -84,12 +82,10 @@ public class FileServiceImpl implements FileService {
     private String getFileExtension(String fileName) {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
-        }
-        catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다.", fileName));
         }
     }
-
 
 
 }
