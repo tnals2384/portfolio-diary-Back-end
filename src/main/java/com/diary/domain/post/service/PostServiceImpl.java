@@ -9,6 +9,8 @@ import com.diary.domain.member.repository.MemberRepository;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.CreatePostRequest;
 import com.diary.domain.post.model.dto.CreatePostResponse;
+import com.diary.domain.post.model.dto.UpdatePostRequest;
+import com.diary.domain.post.model.dto.UpdatePostResponse;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +54,12 @@ public class PostServiceImpl implements PostService {
         }
 
         //file 저장
-        if (!files.isEmpty()) {
+        if (!CollectionUtils.isEmpty(files)) {
             fileService.uploadFiles(post.getId(), files);
         }
 
         return CreatePostResponse.of(post.getId());
     }
+
+
 }
