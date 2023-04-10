@@ -61,5 +61,32 @@ public class PostServiceImpl implements PostService {
         return CreatePostResponse.of(post.getId());
     }
 
+    @Override
+    @Transactional
+    public UpdatePostResponse updatePost(Long memberId, Long postId, UpdatePostRequest request, List<MultipartFile> files) throws IOException {
+        //memberId로 member 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+
+        //post update
+        post.update(request.getTitle(),request.getBeginAt(),request.getFinishAt());
+
+        //experience update
+        experienceService.updateExperience(request.getExperiences());
+        if(!CollectionUtils.isEmpty(request.getNewExperiences())) {
+            experienceService.createExperience(postId, request.getNewExperiences());
+        }
+
+
+
+        return UpdatePostResponse.of(postId);
+    }
 
 }

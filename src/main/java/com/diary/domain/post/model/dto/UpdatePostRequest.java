@@ -1,5 +1,6 @@
 package com.diary.domain.post.model.dto;
 
+import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -22,5 +24,8 @@ public class UpdatePostRequest {
 
     private Map<@NotEmpty String, @NotBlank String> tags;
 
-    private Map<@NotEmpty String, @NotBlank String> experiences;
+
+    private List<UpdateExperienceRequest> experiences;
+    //새로 추가하는 experiences
+    private Map<@NotEmpty String, @NotBlank String> newExperiences;
 }
