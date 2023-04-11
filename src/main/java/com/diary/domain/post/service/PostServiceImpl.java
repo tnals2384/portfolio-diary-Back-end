@@ -74,7 +74,6 @@ public class PostServiceImpl implements PostService {
                 () -> new RestApiException(ErrorCode.NOT_FOUND)
         );
 
-
         //post update
         post.update(request.getTitle(),request.getBeginAt(),request.getFinishAt());
 
@@ -83,6 +82,9 @@ public class PostServiceImpl implements PostService {
         if(!CollectionUtils.isEmpty(request.getNewExperiences())) {
             experienceService.createExperience(postId, request.getNewExperiences());
         }
+
+        //file update
+        fileService.updateFiles(post, files);
 
 
 
