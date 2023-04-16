@@ -86,6 +86,9 @@ public class PostServiceImpl implements PostService {
         //file update
         fileService.updateFiles(post, files);
 
+        //tag update
+        tagService.updateTags(post,request.getTags());
+
 
 
         return UpdatePostResponse.of(postId);
