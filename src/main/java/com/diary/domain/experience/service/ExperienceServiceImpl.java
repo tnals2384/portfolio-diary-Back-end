@@ -1,16 +1,19 @@
 package com.diary.domain.experience.service;
 
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.model.Experience;
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
 import com.diary.domain.experience.repository.ExperienceRepository;
+import com.diary.domain.file.model.File;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -26,7 +29,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     @Transactional
-    public CreateExperienceResponse createExperience(Long postId, Map<String, String> experiences) throws IOException {
+    public CreateExperienceResponse createExperiences(Long postId, Map<String, String> experiences) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(ErrorCode.NOT_FOUND));
 
@@ -43,10 +46,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     @Transactional
-    public void updateExperience(List<UpdateExperienceRequest> requests) {
+    public void updateExperiences(List<UpdateExperienceRequest> requests) throws IOException{
 
        List<Experience> experienceList = experienceRepository.findAll();
-
 
        //Experience List와 Request List id를 비교하여 delete 해야 할 list 찾기
        List<Experience> deleteList = experienceList.stream().filter(o-> requests.stream().noneMatch(
@@ -63,6 +65,15 @@ public class ExperienceServiceImpl implements ExperienceService {
                     ()-> new RestApiException(ErrorCode.NOT_FOUND)
             );
             experience.update(request.getTitle(),request.getContents());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteExperiences(Post post) {
+        List<Experience> experiences = experienceRepository.findAllByPost(post);
+        if(!CollectionUtils.isEmpty(experiences)) {
+            experienceRepository.deleteAll(experiences);
         }
     }
 

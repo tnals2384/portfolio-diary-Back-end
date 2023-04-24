@@ -1,7 +1,9 @@
 package com.diary.domain.experience.service;
 
+import com.amazonaws.services.s3.model.PolicyStatus;
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
+import com.diary.domain.post.model.Post;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +11,8 @@ import java.util.Map;
 
 public interface ExperienceService {
 
-    CreateExperienceResponse createExperience(Long postId, Map<String, String> experiences) throws IOException;
+    CreateExperienceResponse createExperiences(Long postId, Map<String, String> experiences) throws IOException;
 
-    void updateExperience( List<UpdateExperienceRequest> requests);
+    void updateExperiences(List<UpdateExperienceRequest> requests) throws IOException;
+    void deleteExperiences(Post post);
 }
