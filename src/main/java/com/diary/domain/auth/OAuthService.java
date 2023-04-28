@@ -52,6 +52,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         customAttribute.put("provider", registrationId);
         customAttribute.put("nickname", member.getNickname());
         customAttribute.put("email", member.getEmail());
+        customAttribute.put("picture", member.getProfileImageUrl());
         return customAttribute;
 
     }
