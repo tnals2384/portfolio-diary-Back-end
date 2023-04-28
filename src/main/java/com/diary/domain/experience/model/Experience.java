@@ -2,11 +2,10 @@ package com.diary.domain.experience.model;
 
 import com.diary.common.base.BaseEntity;
 import com.diary.domain.post.model.Post;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+
 
 @Entity
 @Getter
@@ -26,5 +25,26 @@ public class Experience extends BaseEntity {
 
     @Column(nullable = false)
     private String contents;
+
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private Experience(String title, String contents,Post post) {
+        this.title = title;
+        this.contents = contents;
+        this.post = post;
+    }
+
+    public static Experience newExperience(String title, String contents, Post post){
+        return Experience.builder()
+                .title(title)
+                .contents(contents)
+                .post(post)
+                .build();
+    }
+
+    public void update(String title,String contents) {
+        this.title=title;
+        this.contents=contents;
+    }
 
 }
