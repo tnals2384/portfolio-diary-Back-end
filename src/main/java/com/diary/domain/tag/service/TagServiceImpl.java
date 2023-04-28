@@ -11,6 +11,7 @@ import com.diary.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,4 +44,26 @@ public class TagServiceImpl implements TagService {
         return CreateTagResponse.of(tagList);
     }
 
+    @Override
+    @Transactional
+    public void updateTags(Post post, Map<String, String> tags) throws IOException {
+        deleteTags(post);
+        if(!CollectionUtils.isEmpty(tags)) {
+            createTag(post.getId(),tags);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteTags(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+
+        if(!CollectionUtils.isEmpty(tags)) {
+            for(Tag tag: tags) {
+                tagRepository.delete(tag);
+            }
+        }
+
+    }
 }

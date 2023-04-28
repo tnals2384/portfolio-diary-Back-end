@@ -1,8 +1,7 @@
 package com.diary.domain.post.controller;
 
 import com.diary.common.base.BaseResponse;
-import com.diary.domain.post.model.dto.CreatePostRequest;
-import com.diary.domain.post.model.dto.CreatePostResponse;
+import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +24,22 @@ public class PostController {
 
         return new BaseResponse<>(postService.createPost(memberId, createPostRequest, files));
     }
+
+    @PutMapping("/api/posts/{postId}")
+    public BaseResponse<UpdatePostResponse> updatePost(
+            @RequestParam @Valid Long memberId,
+            @PathVariable @Valid Long postId,
+            @RequestPart @Valid UpdatePostRequest updatePostRequest,
+            @RequestPart(value="file", required = false) List<MultipartFile> files) throws IOException {
+        return new BaseResponse<>(postService.updatePost(memberId,postId,updatePostRequest,files));
+    }
+
+
+    @DeleteMapping("/api/posts/{postId}")
+    public BaseResponse<DeletePostResponse> deletePost(@RequestParam @Valid Long memberId,
+                                                       @PathVariable @Valid Long postId){
+        return new BaseResponse<>(postService.deletePost(memberId,postId));
+    }
+
 
 }

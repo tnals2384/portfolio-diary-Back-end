@@ -47,4 +47,10 @@ public class Post extends BaseEntity {
                 .build();
     }
 
+    public void update(String title, LocalDateTime beginAt,LocalDateTime finishAt) {
+        this.title=title;
+        this.beginAt=beginAt;
+        this.finishAt=finishAt;
+    }
+
 }

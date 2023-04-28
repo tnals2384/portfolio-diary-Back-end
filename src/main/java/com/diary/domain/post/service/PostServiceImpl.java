@@ -7,8 +7,7 @@ import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.member.repository.MemberRepository;
 import com.diary.domain.post.model.Post;
-import com.diary.domain.post.model.dto.CreatePostRequest;
-import com.diary.domain.post.model.dto.CreatePostResponse;
+import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +47,74 @@ public class PostServiceImpl implements PostService {
 
         //experience 저장
         if (!postRequest.getExperiences().isEmpty()) {
-            experienceService.createExperience(post.getId(), postRequest.getExperiences());
+            experienceService.createExperiences(post.getId(), postRequest.getExperiences());
         }
 
         //file 저장
-        if (!files.isEmpty()) {
+        if (!CollectionUtils.isEmpty(files)) {
             fileService.uploadFiles(post.getId(), files);
         }
 
         return CreatePostResponse.of(post.getId());
     }
+
+    @Override
+    @Transactional
+    public UpdatePostResponse updatePost(Long memberId, Long postId, UpdatePostRequest request, List<MultipartFile> files) throws IOException {
+        //memberId로 member 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //post update
+        post.update(request.getTitle(),request.getBeginAt(),request.getFinishAt());
+
+        //experience update
+        experienceService.updateExperiences(request.getExperiences());
+        if(!CollectionUtils.isEmpty(request.getNewExperiences())) {
+            experienceService.createExperiences(postId, request.getNewExperiences());
+        }
+
+        //file update
+        fileService.updateFiles(post, files);
+
+        //tag update
+        tagService.updateTags(post,request.getTags());
+
+
+
+        return UpdatePostResponse.of(postId);
+    }
+
+    @Override
+    @Transactional
+    public DeletePostResponse deletePost(Long memberId, Long postId) {
+        //memberId로 member 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        if(member.equals(post.getMember())) {
+            experienceService.deleteExperiences(post);
+            tagService.deleteTags(post);
+            fileService.deleteFiles(post);
+            postRepository.delete(post);
+
+            return DeletePostResponse.of(postId);
+        }
+        else {
+             return DeletePostResponse.of(null);
+        }
+    }
+
 }
