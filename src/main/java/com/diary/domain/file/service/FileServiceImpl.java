@@ -23,9 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -99,6 +97,18 @@ public class FileServiceImpl implements FileService {
         if(!CollectionUtils.isEmpty(files)) {
             uploadFiles(post.getId(), files);
         }
+    }
+
+    @Override
+    public Map<String,String> getFiles(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+        Map<String,String> responseFiles = new HashMap<>();
+        if(!CollectionUtils.isEmpty(files)) {
+            for(File file: files) {
+                responseFiles.put(file.getOrigFileName(),file.getFilePath());
+            }
+        }
+        return responseFiles;
     }
 
     //파일 이름 생성

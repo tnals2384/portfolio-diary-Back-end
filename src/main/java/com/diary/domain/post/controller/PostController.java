@@ -40,6 +40,14 @@ public class PostController {
                                                        @PathVariable @Valid Long postId){
         return new BaseResponse<>(postService.deletePost(memberId,postId));
     }
+    
+    @GetMapping("/api/posts/{postId}")
+    public BaseResponse<GetPostResponse> getPost(
+            @RequestParam @Valid Long memberId,
+            @PathVariable @Valid Long postId
+    ) {
+        return new BaseResponse<>(postService.getPost(memberId, postId));
+    }
 
 
 }

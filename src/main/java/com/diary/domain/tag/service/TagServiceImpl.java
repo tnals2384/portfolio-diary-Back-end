@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +65,18 @@ public class TagServiceImpl implements TagService {
                 tagRepository.delete(tag);
             }
         }
+    }
 
+    @Override
+    public Map<String, String> getTags(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+        Map<String, String> responseTags = new HashMap<>();
+        if(!CollectionUtils.isEmpty(tags)) {
+            for(Tag tag: tags) {
+                responseTags.put(tag.getTagType().toString(),tag.getTagName());
+            }
+        }
+
+        return responseTags;
     }
 }

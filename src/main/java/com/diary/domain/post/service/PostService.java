@@ -10,4 +10,6 @@ public interface PostService {
     CreatePostResponse createPost(Long memberId, CreatePostRequest request, List<MultipartFile> files) throws IOException;
     UpdatePostResponse updatePost(Long memberId,Long postId, UpdatePostRequest request, List<MultipartFile> files) throws IOException;
     DeletePostResponse deletePost(Long memberId, Long postId);
+
+    GetPostResponse getPost(Long memberId, Long postId);
 }

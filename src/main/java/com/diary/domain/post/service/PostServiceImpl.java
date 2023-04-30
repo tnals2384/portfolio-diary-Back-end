@@ -2,7 +2,10 @@ package com.diary.domain.post.service;
 
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
+import com.diary.domain.experience.model.Experience;
+import com.diary.domain.experience.repository.ExperienceRepository;
 import com.diary.domain.experience.service.ExperienceService;
+import com.diary.domain.file.repository.FileRepository;
 import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.member.repository.MemberRepository;
@@ -17,7 +20,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class PostServiceImpl implements PostService {
     private final ExperienceService experienceService;
     private final TagService tagService;
     private final FileService fileService;
+    private final FileRepository fileRepository;
 
     @Override
     @Transactional
@@ -115,6 +121,31 @@ public class PostServiceImpl implements PostService {
         else {
              return DeletePostResponse.of(null);
         }
+    }
+
+    //post 상세 조회
+    @Override
+    @Transactional
+    public GetPostResponse getPost(Long memberId, Long postId) {
+        //memberId로 member 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        if(!member.equals(post.getMember())) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+
+        Map<String,String> experiences = experienceService.getExperiences(post);
+        Map<String,String> tags = tagService.getTags(post);
+        Map<String,String> files = fileService.getFiles(post);
+        return GetPostResponse.of(postId,post.getTitle(),post.getBeginAt(),post.getFinishAt(),
+                experiences, tags, files);
     }
 
 }

@@ -14,5 +14,8 @@ public interface ExperienceService {
     CreateExperienceResponse createExperiences(Long postId, Map<String, String> experiences) throws IOException;
 
     void updateExperiences(List<UpdateExperienceRequest> requests) throws IOException;
+
     void deleteExperiences(Post post);
+
+    Map<String, String> getExperiences(Post post);
 }
