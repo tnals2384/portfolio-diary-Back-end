@@ -1,23 +1,24 @@
 package com.diary.domain.member.model;
 
 import com.diary.common.base.BaseEntity;
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
-
-    @Column(nullable = false)
-    private String name;
 
     private String nickname;
 
@@ -30,8 +31,40 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "provider_type")
-    private ProviderType providerType;
+    private String provider;
 
+    @Column(name = "provider_id")
+    private String providerId;
+
+    @Builder(access = PRIVATE)
+    private Member(String nickname, String email, String profileImageUrl, String provider, String providerId){
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+        this.role = MemberRole.USER;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
+    public static Member of(String nickname, String email, String profileImageUrl, String provider, String providerId){
+        return Member.builder()
+                .nickname(nickname)
+                .email(email)
+                .profileImageUrl(profileImageUrl)
+                .provider(provider)
+                .providerId(providerId)
+                .build();
+    }
+    public Member updateNicknameAndEmailAndProfileImg(String nickname, String email, String profileImageUrl){
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+
+        return this;
+    }
+    public Member updateProvider(String provider){
+        this.provider = provider;
+
+        return this;
+    }
 }
