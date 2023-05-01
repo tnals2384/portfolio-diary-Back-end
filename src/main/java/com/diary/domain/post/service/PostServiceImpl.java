@@ -137,13 +137,16 @@ public class PostServiceImpl implements PostService {
                 () -> new RestApiException(ErrorCode.NOT_FOUND)
         );
 
+        //memberId로 조회한 member와 post의 member가 다르면 error
         if(!member.equals(post.getMember())) {
             throw new RestApiException(ErrorCode.BAD_REQUEST);
         }
 
+        //Map으로 experiences, tags, files 받아오기
         Map<String,String> experiences = experienceService.getExperiences(post);
         Map<String,String> tags = tagService.getTags(post);
         Map<String,String> files = fileService.getFiles(post);
+
         return GetPostResponse.of(postId,post.getTitle(),post.getBeginAt(),post.getFinishAt(),
                 experiences, tags, files);
     }

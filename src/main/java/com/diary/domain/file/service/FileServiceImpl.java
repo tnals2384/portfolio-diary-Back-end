@@ -72,6 +72,21 @@ public class FileServiceImpl implements FileService {
     }
 
 
+    //파일 이름 생성
+    private String createFileName(String origFileName) {
+        return UUID.randomUUID().toString().concat(getFileExtension(origFileName));
+    }
+
+
+    //파일 확장자 get
+    private String getFileExtension(String fileName) {
+        try {
+            return fileName.substring(fileName.lastIndexOf("."));
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다.", fileName));
+        }
+    }
+
     
     //파일 삭제 기능
     @Override
@@ -90,6 +105,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    //파일 업데이트. 파일 지웠다가 다시 upload
     @Override
     @Transactional
     public void updateFiles(Post post, List<MultipartFile> files) throws IOException{
@@ -99,10 +115,13 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+
+    //getPost 시 Map<String(파일이름), String(파일url)>으로 files get 가능하도록 함
     @Override
     public Map<String,String> getFiles(Post post) {
         List<File> files = fileRepository.findAllByPost(post);
         Map<String,String> responseFiles = new HashMap<>();
+
         if(!CollectionUtils.isEmpty(files)) {
             for(File file: files) {
                 responseFiles.put(file.getOrigFileName(),file.getFilePath());
@@ -111,19 +130,6 @@ public class FileServiceImpl implements FileService {
         return responseFiles;
     }
 
-    //파일 이름 생성
-    private String createFileName(String origFileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(origFileName));
-    }
 
-
-    //파일 확장자 get
-    private String getFileExtension(String fileName) {
-        try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다.", fileName));
-        }
-    }
 
 }

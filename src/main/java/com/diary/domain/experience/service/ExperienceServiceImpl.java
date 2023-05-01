@@ -67,6 +67,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
     }
 
+    //experience 삭제
     @Override
     @Transactional
     public void deleteExperiences(Post post) {
@@ -77,10 +78,12 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
 
+    //getPost 시 Map<String(제목), String(내용)>으로 experiences get 가능하도록 함
     @Override
     public Map<String, String> getExperiences(Post post) {
         List<Experience> experiences = experienceRepository.findAllByPost(post);
         Map<String,String> responseExperiences = new HashMap<>();
+
         if(!CollectionUtils.isEmpty(experiences)) {
             for(Experience ex: experiences) {
                 responseExperiences.put(ex.getTitle(),ex.getContents());
