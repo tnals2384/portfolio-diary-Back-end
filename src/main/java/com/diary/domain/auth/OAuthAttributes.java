@@ -26,7 +26,7 @@ public enum OAuthAttributes {
         this.of = of;
     }
 
-    // provider가 일치하는 경우에만 apply를 호출하여 (google,kakao) member를 반환
+    // provider가 일치하는 경우에만 apply를 호출하여 (google) member를 반환
     public static Member extract(String registrationId, Map<String, Object> attributes) {
         return Arrays.stream(values())
                 .filter(provider -> registrationId.equals(provider.registrationId))
