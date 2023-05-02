@@ -14,6 +14,10 @@ import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -151,4 +155,19 @@ public class PostServiceImpl implements PostService {
                 experiences, tags, files);
     }
 
+    @Override
+    @Transactional
+    public Page<GetPostPageResponse> getAllPostsWithPaging(Long memberId, String orderType,Pageable pageable) {
+        Page<Post> list = postRepository.findAllWithPaging(memberId,orderType,pageable);
+        return list.map(
+                post -> GetPostPageResponse.of(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getBeginAt(),
+                        post.getFinishAt(),
+                        tagService.getTags(post)
+                )
+        );
+
+    }
 }
