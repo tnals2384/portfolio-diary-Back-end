@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -28,22 +27,16 @@ public class SecurityConfig {
                 //basic 인증방식은 username:password를 base64 인코딩으로 Authroization 헤더로 보내는 방식
                 .httpBasic().disable()
                 .formLogin().disable()
-                //세션을 생성하지 않고, 요청마다 새로운 인증을 수행하도록 구성하는 옵션으로 REST API와 같은 환경에서 사용
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 //요청에 대한 인가 처리 설정
                 .authorizeRequests()
-                //인증되지 않은 사용자도 접근 가능하도록 허용 (로그인, 토큰발급에는 인증이 불필요)
-                .anyRequest().permitAll()
+                .antMatchers("/","/oauth2/**").permitAll() // 로그인은 누구나 가능하도록
+                .anyRequest().authenticated() // 그 외엔 모두 인증 필요
                 .and()
                 //OAuth 2.0 기반 인증을 처리하기위해 Provider와의 연동을 지원
                 .oauth2Login()
-                //인증에 성공하면 실행할 handler (redirect 시킬 목적)
-                //OAuth 2.0 Provider로부터 사용자 정보를 가져오는 엔드포인트를 지정하는 메서드
                 .userInfoEndpoint()
                 //OAuth 2.0 인증이 처리되는데 사용될 사용자 서비스를 지정하는 메서드
-                .userService(oAuthService)
-                .and();
+                .userService(oAuthService);
 
         return http.build();
     }

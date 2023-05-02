@@ -13,6 +13,7 @@ public enum ErrorCode {
      * 400 BAD_REQUEST: 잘못된 요청
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request."),
+    NO_LOGIN_USER(HttpStatus.BAD_REQUEST, "로그인된 유저가 없습니다."),
 
     /*
      * 401 UNAUTHORIZED: 인증되지 않은 사용자의 요청
