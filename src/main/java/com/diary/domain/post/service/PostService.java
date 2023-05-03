@@ -1,6 +1,5 @@
 package com.diary.domain.post.service;
 
-import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +17,5 @@ public interface PostService {
 
     GetPostResponse getPost(Long memberId, Long postId);
 
-    Page<GetPostPageResponse> getAllPostsWithPaging(Long memberId, String orderType, Pageable pageable);
+   GetPagePostsResponse getAllPostsWithPaging(Long memberId, String orderType, Pageable pageable);
 }

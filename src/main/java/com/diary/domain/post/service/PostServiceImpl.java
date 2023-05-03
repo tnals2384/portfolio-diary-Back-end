@@ -2,8 +2,6 @@ package com.diary.domain.post.service;
 
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
-import com.diary.domain.experience.model.Experience;
-import com.diary.domain.experience.repository.ExperienceRepository;
 import com.diary.domain.experience.service.ExperienceService;
 import com.diary.domain.file.repository.FileRepository;
 import com.diary.domain.file.service.FileService;
@@ -15,16 +13,13 @@ import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -155,19 +150,30 @@ public class PostServiceImpl implements PostService {
                 experiences, tags, files);
     }
 
+
+    //모든 Post 페이징 조회
     @Override
     @Transactional
-    public Page<GetPostPageResponse> getAllPostsWithPaging(Long memberId, String orderType,Pageable pageable) {
+    public GetPagePostsResponse getAllPostsWithPaging(Long memberId, String orderType, Pageable pageable) {
+
         Page<Post> list = postRepository.findAllWithPaging(memberId,orderType,pageable);
-        return list.map(
-                post -> GetPostPageResponse.of(
+
+        int totalPages = list.getTotalPages();
+        int totalPosts = (int)list.getTotalElements(); //long형을 int형으로 받음
+
+        //받아온 Page<Post> list를 GetPostsResponse dto 형식으로 변환하여 list에 저장
+        List<GetPostsResponse> pagePosts = list.map(
+                post -> GetPostsResponse.of(
                         post.getId(),
                         post.getTitle(),
                         post.getBeginAt(),
                         post.getFinishAt(),
                         tagService.getTags(post)
                 )
-        );
+        ).getContent();
+
+        //totalPage, totalPosts 를 포함하여 GetPagePostsResponse 로 반환
+        return GetPagePostsResponse.of(pagePosts,totalPages,totalPosts);
 
     }
 }

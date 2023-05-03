@@ -54,15 +54,14 @@ public class PostController {
         return new BaseResponse<>(postService.getPost(memberId, postId));
     }
 
+    //Post 목록 조회 with Paging
     @GetMapping("/api/posts")
-    public BaseResponse<List<GetPostPageResponse>> getAllPosts(
+    public BaseResponse<GetPagePostsResponse> getAllPosts(
             @RequestParam @Valid Long memberId,
             @RequestParam(defaultValue = "id", value = "orderBy") String orderType,
             @PageableDefault(size= 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<GetPostPageResponse> PagePost = postService.getAllPostsWithPaging(memberId,orderType,pageable).getContent();
-        return new BaseResponse<>(PagePost);
-
+        return new BaseResponse<>(postService.getAllPostsWithPaging(memberId,orderType,pageable));
     }
 
 

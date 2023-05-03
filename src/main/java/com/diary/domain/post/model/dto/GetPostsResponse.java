@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-
-public class GetPostPageResponse {
+public class GetPostsResponse {
 
     private Long postId;
 
@@ -29,8 +27,8 @@ public class GetPostPageResponse {
     //tagtype, tag이름
     private Map<String,String> tags;
 
-    public static GetPostPageResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt
+    public static GetPostsResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt
     , Map<String,String> tags) {
-        return new GetPostPageResponse(postId,title,beginAt,finishAt,tags);
+        return new GetPostsResponse(postId,title,beginAt,finishAt,tags);
     }
 }
