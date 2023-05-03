@@ -1,11 +1,11 @@
 package com.diary.domain.member.service;
 
-import com.diary.domain.member.repository.MemberRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    private MemberRepository memberRepository;
+    private final JPAQueryFactory queryFactory;
 }
