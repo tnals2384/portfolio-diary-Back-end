@@ -1,6 +1,5 @@
 package com.diary.domain.file.service;
 
-import com.diary.domain.file.model.File;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.post.model.Post;
 import org.springframework.web.multipart.MultipartFile;

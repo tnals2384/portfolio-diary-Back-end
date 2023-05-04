@@ -1,6 +1,5 @@
 package com.diary.domain.experience.service;
 
-import com.amazonaws.services.s3.model.PolicyStatus;
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
 import com.diary.domain.post.model.Post;

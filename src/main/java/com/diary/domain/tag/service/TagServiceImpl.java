@@ -25,7 +25,7 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
 
-    
+
     //태그 생성
     @Override
     @Transactional
@@ -39,9 +39,9 @@ public class TagServiceImpl implements TagService {
         for (Map.Entry<String, String> t : tags.entrySet()) {
             //tagType으로 변환
             TagType type = TagType.of(t.getKey());
-            
+
             //newTag 만들어 저장
-            Tag tag = tagRepository.save(Tag.newTag(type,t.getValue(),post));
+            Tag tag = tagRepository.save(Tag.newTag(type, t.getValue(), post));
 
             tagList.add(tag.getId());
         }
@@ -54,8 +54,8 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public void updateTags(Post post, Map<String, String> tags) throws IOException {
         deleteTags(post);
-        if(!CollectionUtils.isEmpty(tags)) {
-            createTag(post.getId(),tags);
+        if (!CollectionUtils.isEmpty(tags)) {
+            createTag(post.getId(), tags);
         }
     }
 
@@ -66,8 +66,8 @@ public class TagServiceImpl implements TagService {
     public void deleteTags(Post post) {
         List<Tag> tags = tagRepository.findAllByPost(post);
 
-        if(!CollectionUtils.isEmpty(tags)) {
-            for(Tag tag: tags) {
+        if (!CollectionUtils.isEmpty(tags)) {
+            for (Tag tag : tags) {
                 tagRepository.delete(tag);
             }
         }
@@ -79,9 +79,9 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagRepository.findAllByPost(post);
         Map<String, String> responseTags = new HashMap<>();
 
-        if(!CollectionUtils.isEmpty(tags)) {
-            for(Tag tag: tags) {
-                responseTags.put(tag.getTagType().toString(),tag.getTagName());
+        if (!CollectionUtils.isEmpty(tags)) {
+            for (Tag tag : tags) {
+                responseTags.put(tag.getTagType().toString(), tag.getTagName());
             }
         }
         return responseTags;

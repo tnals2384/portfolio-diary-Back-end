@@ -15,12 +15,10 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.util.*;
@@ -87,15 +85,15 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    
+
     //파일 삭제 기능
     @Override
     @Transactional
     public void deleteFiles(Post post) {
         List<File> files = fileRepository.findAllByPost(post);
 
-        if(!CollectionUtils.isEmpty(files)) {
-            for(File file: files) {
+        if (!CollectionUtils.isEmpty(files)) {
+            for (File file : files) {
                 //s3 파일 삭제
                 amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
                 //repository에서 파일 삭제
@@ -108,9 +106,9 @@ public class FileServiceImpl implements FileService {
     //파일 업데이트. 파일 지웠다가 다시 upload
     @Override
     @Transactional
-    public void updateFiles(Post post, List<MultipartFile> files) throws IOException{
+    public void updateFiles(Post post, List<MultipartFile> files) throws IOException {
         deleteFiles(post);
-        if(!CollectionUtils.isEmpty(files)) {
+        if (!CollectionUtils.isEmpty(files)) {
             uploadFiles(post.getId(), files);
         }
     }
@@ -118,18 +116,17 @@ public class FileServiceImpl implements FileService {
 
     //getPost 시 Map<String(파일이름), String(파일url)>으로 files get 가능하도록 함
     @Override
-    public Map<String,String> getFiles(Post post) {
+    public Map<String, String> getFiles(Post post) {
         List<File> files = fileRepository.findAllByPost(post);
-        Map<String,String> responseFiles = new HashMap<>();
+        Map<String, String> responseFiles = new HashMap<>();
 
-        if(!CollectionUtils.isEmpty(files)) {
-            for(File file: files) {
-                responseFiles.put(file.getOrigFileName(),file.getFilePath());
+        if (!CollectionUtils.isEmpty(files)) {
+            for (File file : files) {
+                responseFiles.put(file.getOrigFileName(), file.getFilePath());
             }
         }
         return responseFiles;
     }
-
 
 
 }
