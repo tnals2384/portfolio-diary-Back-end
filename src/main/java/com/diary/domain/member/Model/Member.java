@@ -67,4 +67,7 @@ public class Member extends BaseEntity {
 
         return this;
     }
+    public String getRoleValue(){
+        return this.getRole().getValue();
+    }
 }
