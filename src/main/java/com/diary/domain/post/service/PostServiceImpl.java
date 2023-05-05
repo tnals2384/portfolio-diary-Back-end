@@ -3,6 +3,7 @@ package com.diary.domain.post.service;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.service.ExperienceService;
+import com.diary.domain.file.repository.FileRepository;
 import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.member.repository.MemberRepository;
@@ -11,6 +12,8 @@ import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final ExperienceService experienceService;
     private final TagService tagService;
     private final FileService fileService;
+    private final FileRepository fileRepository;
 
     @Override
     @Transactional
@@ -117,4 +122,58 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    //post 상세 조회
+    @Override
+    @Transactional
+    public GetPostResponse getPost(Long memberId, Long postId) {
+        //memberId로 member 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //memberId로 조회한 member와 post의 member가 다르면 error
+        if(!member.equals(post.getMember())) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+
+        //Map으로 experiences, tags, files 받아오기
+        Map<String,String> experiences = experienceService.getExperiences(post);
+        Map<String,String> tags = tagService.getTags(post);
+        Map<String,String> files = fileService.getFiles(post);
+
+        return GetPostResponse.of(postId,post.getTitle(),post.getBeginAt(),post.getFinishAt(),
+                experiences, tags, files);
+    }
+
+
+    //모든 Post 페이징 조회
+    @Override
+    @Transactional
+    public GetPagePostsResponse getAllPostsWithPaging(Long memberId, String orderType, Pageable pageable) {
+
+        Page<Post> list = postRepository.findAllWithPaging(memberId,orderType,pageable);
+
+        int totalPages = list.getTotalPages();
+        int totalPosts = (int)list.getTotalElements(); //long형을 int형으로 받음
+
+        //받아온 Page<Post> list를 GetPostsResponse dto 형식으로 변환하여 list에 저장
+        List<GetPostsResponse> pagePosts = list.map(
+                post -> GetPostsResponse.of(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getBeginAt(),
+                        post.getFinishAt(),
+                        tagService.getTags(post)
+                )
+        ).getContent();
+
+        //totalPage, totalPosts 를 포함하여 GetPagePostsResponse 로 반환
+        return GetPagePostsResponse.of(pagePosts,totalPages,totalPosts);
+
+    }
 }
