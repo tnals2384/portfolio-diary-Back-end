@@ -1,6 +1,7 @@
 package com.diary.config.auth;
 
 import com.diary.domain.auth.OAuthService;
+import com.diary.domain.member.model.MemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfig {
                 //요청에 대한 인가 처리 설정
                 .authorizeRequests()
                 .antMatchers("/","/oauth2/**").permitAll() // 로그인은 누구나 가능하도록
+                .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name()) // 유저만 접속 가능
                 .anyRequest().authenticated() // 그 외엔 모두 인증 필요
                 .and()
                 //OAuth 2.0 기반 인증을 처리하기위해 Provider와의 연동을 지원
