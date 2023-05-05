@@ -62,6 +62,7 @@ public class Member extends BaseEntity {
 
         return this;
     }
+
     public Member updateProvider(String provider){
         this.provider = provider;
 
