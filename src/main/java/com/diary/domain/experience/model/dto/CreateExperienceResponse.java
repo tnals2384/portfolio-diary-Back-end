@@ -1,6 +1,5 @@
 package com.diary.domain.experience.model.dto;
 
-import com.diary.domain.tag.model.dto.CreateTagResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

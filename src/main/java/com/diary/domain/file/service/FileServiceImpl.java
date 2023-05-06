@@ -15,17 +15,13 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -74,33 +70,6 @@ public class FileServiceImpl implements FileService {
     }
 
 
-    
-    //파일 삭제 기능
-    @Override
-    @Transactional
-    public void deleteFiles(Post post) {
-        List<File> files = fileRepository.findAllByPost(post);
-
-        if(!CollectionUtils.isEmpty(files)) {
-            for(File file: files) {
-                //s3 파일 삭제
-                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
-                //repository에서 파일 삭제
-                fileRepository.delete(file);
-            }
-
-        }
-    }
-
-    @Override
-    @Transactional
-    public void updateFiles(Post post, List<MultipartFile> files) throws IOException{
-        deleteFiles(post);
-        if(!CollectionUtils.isEmpty(files)) {
-            uploadFiles(post.getId(), files);
-        }
-    }
-
     //파일 이름 생성
     private String createFileName(String origFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(origFileName));
@@ -115,5 +84,49 @@ public class FileServiceImpl implements FileService {
             throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다.", fileName));
         }
     }
+
+
+    //파일 삭제 기능
+    @Override
+    @Transactional
+    public void deleteFiles(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+
+        if (!CollectionUtils.isEmpty(files)) {
+            for (File file : files) {
+                //s3 파일 삭제
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
+                //repository에서 파일 삭제
+                fileRepository.delete(file);
+            }
+
+        }
+    }
+
+    //파일 업데이트. 파일 지웠다가 다시 upload
+    @Override
+    @Transactional
+    public void updateFiles(Post post, List<MultipartFile> files) throws IOException {
+        deleteFiles(post);
+        if (!CollectionUtils.isEmpty(files)) {
+            uploadFiles(post.getId(), files);
+        }
+    }
+
+
+    //getPost 시 Map<String(파일이름), String(파일url)>으로 files get 가능하도록 함
+    @Override
+    public Map<String, String> getFiles(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+        Map<String, String> responseFiles = new HashMap<>();
+
+        if (!CollectionUtils.isEmpty(files)) {
+            for (File file : files) {
+                responseFiles.put(file.getOrigFileName(), file.getFilePath());
+            }
+        }
+        return responseFiles;
+    }
+
 
 }
