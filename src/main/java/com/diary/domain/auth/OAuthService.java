@@ -43,7 +43,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 
         // 로그인 유저 리턴
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("USER")),
+                Collections.singleton(new SimpleGrantedAuthority(member.getRoleValue())),
                 customAttribute,
                 userNameAttributeName);
     }
