@@ -60,18 +60,30 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    //태그 삭제
+    //태그 삭제 (완전 삭제)
     @Override
     @Transactional
     public void deleteTags(Post post) {
         List<Tag> tags = tagRepository.findAllByPost(post);
 
         if (!CollectionUtils.isEmpty(tags)) {
+            tagRepository.deleteAll(tags);
+        }
+    }
+
+    //태그 삭제 (SotfDelete로 Status만 변경)
+    @Override
+    @Transactional
+    public void softDeleteTags(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+
+        if (!CollectionUtils.isEmpty(tags)) {
             for (Tag tag : tags) {
-                tagRepository.delete(tag);
+                tag.changeStatus(tag.getStatus());
             }
         }
     }
+
 
     //getPost 시 Map<String(타입), String(태그이름)>으로 tags get 가능하도록 함
     @Override

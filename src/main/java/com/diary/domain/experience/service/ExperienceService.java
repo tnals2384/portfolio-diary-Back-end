@@ -15,6 +15,7 @@ public interface ExperienceService {
     void updateExperiences(List<UpdateExperienceRequest> requests) throws IOException;
 
     void deleteExperiences(Post post);
+    void softDeleteExperiences(Post post);
 
     Map<String, String> getExperiences(Post post);
 }

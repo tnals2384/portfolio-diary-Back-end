@@ -95,10 +95,10 @@ public class PostServiceImpl implements PostService {
         );
 
         if (loginMember.equals(post.getMember())) {
-            experienceService.deleteExperiences(post);
-            tagService.deleteTags(post);
-            fileService.deleteFiles(post);
-            postRepository.delete(post);
+            experienceService.softDeleteExperiences(post);
+            tagService.softDeleteTags(post);
+            fileService.softDeleteFiles(post);
+            post.changeStatus(post.getStatus());
 
             return DeletePostResponse.of(postId);
         } else {

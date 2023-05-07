@@ -11,6 +11,7 @@ public interface TagService {
 
     void updateTags(Post post, Map<String, String> tags) throws IOException;
     void deleteTags(Post post);
+     void softDeleteTags(Post post);
      Map<String, String> getTags(Post post);
 
     }
