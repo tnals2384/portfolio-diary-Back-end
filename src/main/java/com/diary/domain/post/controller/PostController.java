@@ -3,6 +3,7 @@ package com.diary.domain.post.controller;
 import com.diary.common.base.BaseResponse;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
+import com.diary.config.auth.MemberId;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.member.repository.MemberRepository;
 import com.diary.domain.post.model.dto.*;
@@ -18,15 +19,16 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @RestController
 public class PostController {
     private final PostService postService;
     private final MemberRepository memberRepository;
 
-    @PostMapping("/api/posts")
+    @PostMapping("/posts")
     public BaseResponse<CreatePostResponse> createPost(
-            @RequestParam @Valid Long memberId,
+            @MemberId Long memberId,
             @RequestPart @Valid CreatePostRequest createPostRequest,
             @RequestPart(value = "file", required = false) List<MultipartFile> files) throws IOException {
 
@@ -34,9 +36,9 @@ public class PostController {
         return new BaseResponse<>(postService.createPost(loginMember, createPostRequest, files));
     }
 
-    @PutMapping("/api/posts/{postId}")
+    @PutMapping("/posts/{postId}")
     public BaseResponse<UpdatePostResponse> updatePost(
-            @RequestParam @Valid Long memberId,
+            @MemberId Long memberId,
             @PathVariable @Valid Long postId,
             @RequestPart @Valid UpdatePostRequest updatePostRequest,
             @RequestPart(value = "file", required = false) List<MultipartFile> files) throws IOException {
@@ -46,27 +48,25 @@ public class PostController {
     }
 
 
-    @DeleteMapping("/api/posts/{postId}")
-    public BaseResponse<DeletePostResponse> deletePost(@RequestParam @Valid Long memberId, @PathVariable @Valid Long postId) {
+    @DeleteMapping("/posts/{postId}")
+    public BaseResponse<DeletePostResponse> deletePost(@MemberId Long memberId, @PathVariable @Valid Long postId) {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
         return new BaseResponse<>(postService.deletePost(loginMember, postId));
     }
 
     //상세 조회
-    @GetMapping("/api/posts/{postId}")
-    public BaseResponse<GetPostResponse> getPost(
-            @RequestParam @Valid Long memberId,
-            @PathVariable @Valid Long postId) {
+    @GetMapping("/posts/{postId}")
+    public BaseResponse<GetPostResponse> getPost(@MemberId Long memberId, @PathVariable @Valid Long postId) {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
         return new BaseResponse<>(postService.getPost(loginMember, postId));
     }
 
     //Post 목록 조회 with Paging
-    @GetMapping("/api/posts")
+    @GetMapping("/posts")
     public BaseResponse<GetPagePostsResponse> getAllPosts(
-            @RequestParam @Valid Long memberId,
+            @MemberId Long memberId,
             @RequestParam(defaultValue = "id", value = "orderBy") String orderType,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
