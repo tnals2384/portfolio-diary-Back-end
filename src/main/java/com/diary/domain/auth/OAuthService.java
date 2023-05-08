@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,6 +23,8 @@ import java.util.Map;
 public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
+    private final HttpSession httpSession;
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService delegate = new DefaultOAuth2UserService(); //DefaultOAuth2User 서비스를 통해 User 정보를 가져와야 하기 때문에 대리자 생성
@@ -38,6 +41,8 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         Member member = OAuthAttributes.extract(registrationId, attributes); // registrationId에 따라 유저 정보를 통해 공통된 Member 객체로 만들어 줌
         member.updateProvider(registrationId);
         member = saveOrUpdate(member);
+
+        httpSession.setAttribute("user", member.getId());
 
         Map<String, Object> customAttribute = customAttribute(attributes, userNameAttributeName, member, registrationId);
 
