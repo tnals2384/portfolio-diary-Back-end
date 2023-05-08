@@ -9,6 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -29,17 +34,29 @@ public class SecurityConfig {
                 .formLogin().disable()
                 //요청에 대한 인가 처리 설정
                 .authorizeRequests()
-                .antMatchers("/","/oauth2/**").permitAll() // 로그인은 누구나 가능하도록
-                .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name()) // 유저만 접속 가능
+                .antMatchers("/api/**").hasRole(MemberRole.USER.name())
                 .anyRequest().permitAll() // 개발 완료 전까지 모두 접속 가능하도록
                 .and()
                 //OAuth 2.0 기반 인증을 처리하기위해 Provider와의 연동을 지원
                 .oauth2Login()
-                .defaultSuccessUrl("/")
                 .userInfoEndpoint()
                 //OAuth 2.0 인증이 처리되는데 사용될 사용자 서비스를 지정하는 메서드
                 .userService(oAuthService);
 
         return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
