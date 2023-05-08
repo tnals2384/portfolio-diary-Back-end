@@ -7,6 +7,7 @@ import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.model.Tag;
 import com.diary.domain.tag.model.TagType;
 import com.diary.domain.tag.model.dto.CreateTagResponse;
+import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -86,4 +84,20 @@ public class TagServiceImpl implements TagService {
         }
         return responseTags;
     }
+
+    @Override
+    @Transactional
+    public List<FindTagResponse> findTagList(Long memberId) {
+        List<FindTagResponse> responses = new ArrayList<>();
+
+        List<TagType> tagTypes = Arrays.asList(TagType.JOB, TagType.ABILITY, TagType.STACK);
+        for (TagType tagType : tagTypes) {
+            List<String> tagNames = tagRepository.findTagNameByMemberAndTagType(memberId, tagType);
+            FindTagResponse response = FindTagResponse.of(tagType, tagNames);
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
 }
