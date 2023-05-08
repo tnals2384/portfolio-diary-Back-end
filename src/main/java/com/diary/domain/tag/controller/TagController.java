@@ -1,5 +1,6 @@
 package com.diary.domain.tag.controller;
 
+import com.diary.common.base.BaseResponse;
 import com.diary.config.auth.MemberId;
 import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.service.TagService;
@@ -18,7 +19,7 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping("/tags")
-    public List<FindTagResponse> findTagList (@MemberId Long memberId){
-        return tagService.findTagList(memberId);
+    public BaseResponse<List<FindTagResponse>> findTagList (@MemberId Long memberId){
+        return new BaseResponse<>(tagService.findTagList(memberId));
     }
 }
