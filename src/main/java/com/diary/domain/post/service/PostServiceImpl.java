@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
 
         //tag 저장
         if (!postRequest.getTags().isEmpty()) {
-            tagService.createTag(post.getId(), postRequest.getTags());
+            tagService.createTag(post.getId(), postRequest.getTags(), loginMember);
         }
 
         //experience 저장
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
         fileService.updateFiles(post, files);
 
         //tag update
-        tagService.updateTags(post, request.getTags());
+        tagService.updateTags(post, request.getTags(), loginMember);
 
         return UpdatePostResponse.of(postId);
     }
@@ -148,12 +148,22 @@ public class PostServiceImpl implements PostService {
                         post.getTitle(),
                         post.getBeginAt(),
                         post.getFinishAt(),
-                        tagService.getTags(post)
+                        tagService.findTagName(loginMember, post.getId())
                 )
         ).getContent();
 
         //totalPage, totalPosts 를 포함하여 GetPagePostsResponse 로 반환
         return GetPagePostsResponse.of(pagePosts, totalPages, totalPosts);
 
+    }
+
+    @Override
+    @Transactional
+    public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
+        List<GetPostsResponse> responses = postRepository.findPostsByTagName(loginMember, tagName, orderType, pageable);
+        for (GetPostsResponse response : responses){
+            response.updateTagName(tagService.findTagName(loginMember, response.getPostId()));
+        }
+        return responses;
     }
 }
