@@ -1,6 +1,7 @@
 package com.diary.domain.post.model.dto;
 
 
+import com.diary.domain.experience.model.dto.GetExperienceResponse;
 import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.tag.model.dto.GetTagResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,13 +25,13 @@ public class GetPostResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime finishAt;
 
-    private Map<String,String> experiences;
+    private List<GetExperienceResponse> getExperienceResponses;
     private List<GetTagResponse> getTagResponses;
-    private List<GetFileResponse> files;
+    private List<GetFileResponse> getFileResponses;
 
     public static GetPostResponse of(Long postId, String title, LocalDateTime beginAt
-        , LocalDateTime finishAt, Map<String,String> experiences, List<GetTagResponse> getTagResponses,
+            , LocalDateTime finishAt, List<GetExperienceResponse> experiences, List<GetTagResponse> tags,
                                      List<GetFileResponse> files) {
-        return new GetPostResponse(postId,title,beginAt,finishAt,experiences,getTagResponses,files);
+        return new GetPostResponse(postId, title, beginAt, finishAt, experiences, tags, files);
     }
 }

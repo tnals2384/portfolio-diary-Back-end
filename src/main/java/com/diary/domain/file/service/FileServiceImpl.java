@@ -134,6 +134,7 @@ public class FileServiceImpl implements FileService {
     public List<GetFileResponse> getFiles(Post post) {
         List<File> files = fileRepository.findAllByPost(post);
         List<GetFileResponse> getFileResponses = new ArrayList<>();
+
         if (!CollectionUtils.isEmpty(files)) {
             for (File file : files) {
                 getFileResponses.add(
