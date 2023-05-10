@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -24,11 +24,14 @@ public class GetPostsResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime finishAt;
 
-    //tagtype, tag이름
-    private Map<String,String> tags;
+    private List<String> tagName;
 
-    public static GetPostsResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt
-    , Map<String,String> tags) {
-        return new GetPostsResponse(postId,title,beginAt,finishAt,tags);
+    public static GetPostsResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt, List<String> tagName) {
+        return new GetPostsResponse(postId, title, beginAt, finishAt, tagName);
+    }
+
+    public GetPostsResponse updateTagName(List<String> tagName){
+        this.tagName = tagName;
+        return this;
     }
 }
