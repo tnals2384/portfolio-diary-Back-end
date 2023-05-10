@@ -15,4 +15,5 @@ public interface TagService {
     void deleteTags(Post post);
     Map<String, String> getTags(Post post);
     List<FindTagResponse> findTagList(Long memberId);
+    List<String> findTagName(Member member, Long postId);
 }

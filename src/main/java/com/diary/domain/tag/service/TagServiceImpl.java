@@ -105,4 +105,10 @@ public class TagServiceImpl implements TagService {
         return responses;
     }
 
+    @Override
+    @Transactional
+    public List<String> findTagName(Member member, Long postId) {
+        return tagRepository.findTagNameByMemberAndPost(member, postId);
+    }
+
 }
