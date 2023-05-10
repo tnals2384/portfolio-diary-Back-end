@@ -1,12 +1,15 @@
 package com.diary.domain.tag.repository;
 
+import com.diary.domain.member.model.Member;
 import com.diary.domain.tag.model.TagType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.diary.domain.tag.model.QTag.tag;
+import static com.diary.domain.member.model.QMember.member;
+import static com.diary.domain.memberTag.model.QMemberTag.memberTag;
+
 
 
 @RequiredArgsConstructor
@@ -16,12 +19,12 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
     @Override
     public List<String> findTagNameByMemberAndTagType(Long memberId, TagType tagType) {
         return queryFactory
-                .select(tag.tagName.as("tagName"))
-                .from(tag)
-                .where(tag.post.member.id.eq(memberId),
-                        tag.tagType.eq(tagType))
-                .orderBy(tag.tagName.count().desc())
-                .distinct()
+                .select(memberTag.tag.tagName)
+                .from(memberTag)
+                .join(member).on(member.id.eq(memberId))
+                .where(memberTag.tag.tagType.eq(tagType))
+                .groupBy(memberTag.tag.tagName)
+                .orderBy(memberTag.tag.tagName.count().desc())
                 .fetch();
     }
 }

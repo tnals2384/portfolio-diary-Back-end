@@ -2,6 +2,9 @@ package com.diary.domain.tag.service;
 
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
+import com.diary.domain.member.model.Member;
+import com.diary.domain.memberTag.model.MemberTag;
+import com.diary.domain.memberTag.repository.MemberTagRepository;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.model.Tag;
@@ -22,12 +25,13 @@ import java.util.*;
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
+    private final MemberTagRepository memberTagRepository;
 
 
     //태그 생성
     @Override
     @Transactional
-    public CreateTagResponse createTag(Long postId, Map<String, String> tags) throws IOException {
+    public CreateTagResponse createTag(Long postId, Map<String, String> tags, Member member) throws IOException {
 
         List<Long> tagList = new ArrayList<>();
         Post post = postRepository.findById(postId).orElseThrow(
@@ -41,6 +45,9 @@ public class TagServiceImpl implements TagService {
             //newTag 만들어 저장
             Tag tag = tagRepository.save(Tag.newTag(type, t.getValue(), post));
 
+            //member tag 관계 테이블
+            memberTagRepository.save(MemberTag.of(member,tag));
+
             tagList.add(tag.getId());
         }
 
@@ -50,10 +57,10 @@ public class TagServiceImpl implements TagService {
     //태그 업데이트. (지웠다가 다시 생성)
     @Override
     @Transactional
-    public void updateTags(Post post, Map<String, String> tags) throws IOException {
+    public void updateTags(Post post, Map<String, String> tags, Member member) throws IOException {
         deleteTags(post);
         if (!CollectionUtils.isEmpty(tags)) {
-            createTag(post.getId(), tags);
+            createTag(post.getId(), tags, member);
         }
     }
 
@@ -92,9 +99,7 @@ public class TagServiceImpl implements TagService {
 
         List<TagType> tagTypes = Arrays.asList(TagType.JOB, TagType.ABILITY, TagType.STACK);
         for (TagType tagType : tagTypes) {
-            List<String> tagNames = tagRepository.findTagNameByMemberAndTagType(memberId, tagType);
-            FindTagResponse response = FindTagResponse.of(tagType, tagNames);
-            responses.add(response);
+            responses.add(FindTagResponse.of(tagType, tagRepository.findTagNameByMemberAndTagType(memberId, tagType)));
         }
 
         return responses;
