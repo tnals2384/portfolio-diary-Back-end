@@ -1,17 +1,16 @@
 package com.diary.domain.post.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetPostsResponse {
 
     private Long postId;
@@ -24,11 +23,14 @@ public class GetPostsResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime finishAt;
 
-    //tagtype, tag이름
-    private Map<String,String> tags;
+    private List<String> tagName;
 
-    public static GetPostsResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt
-    , Map<String,String> tags) {
-        return new GetPostsResponse(postId,title,beginAt,finishAt,tags);
+    public static GetPostsResponse of(Long postId, String title, LocalDateTime beginAt, LocalDateTime finishAt, List<String> tagName) {
+        return new GetPostsResponse(postId, title, beginAt, finishAt, tagName);
+    }
+
+    public GetPostsResponse updateTagName(List<String> tagName){
+        this.tagName = tagName;
+        return this;
     }
 }

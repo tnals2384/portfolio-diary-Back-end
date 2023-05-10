@@ -1,7 +1,10 @@
 package com.diary.domain.post.repository;
 
+import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
+import com.diary.domain.post.model.dto.GetPostsResponse;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,6 +47,23 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 where(post.member.id.eq(memberId))
                 .fetchFirst();
 
-        return new PageImpl<>(result,pageable, total);
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    @Override
+    public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
+        return queryFactory
+                .select(Projections.fields(GetPostsResponse.class,
+                        post.id.as("postId"),
+                        post.title.as("title"),
+                        post.beginAt.as("beginAt"),
+                        post.finishAt.as("finishAt")
+                ))
+                .from(post)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
     }
 }
