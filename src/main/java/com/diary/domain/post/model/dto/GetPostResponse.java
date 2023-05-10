@@ -3,7 +3,7 @@ package com.diary.domain.post.model.dto;
 
 import com.diary.domain.experience.model.dto.GetExperienceResponse;
 import com.diary.domain.file.model.dto.GetFileResponse;
-import com.diary.domain.tag.model.dto.GetTagResponse;
+import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,11 +26,11 @@ public class GetPostResponse {
     private LocalDateTime finishAt;
 
     private List<GetExperienceResponse> getExperienceResponses;
-    private List<GetTagResponse> getTagResponses;
+    private List<FindTagResponse> getTagResponses;
     private List<GetFileResponse> getFileResponses;
 
     public static GetPostResponse of(Long postId, String title, LocalDateTime beginAt
-            , LocalDateTime finishAt, List<GetExperienceResponse> experiences, List<GetTagResponse> tags,
+            , LocalDateTime finishAt, List<GetExperienceResponse> experiences, List<FindTagResponse> tags,
                                      List<GetFileResponse> files) {
         return new GetPostResponse(postId, title, beginAt, finishAt, experiences, tags, files);
     }

@@ -11,7 +11,6 @@ import com.diary.domain.tag.model.Tag;
 import com.diary.domain.tag.model.TagType;
 import com.diary.domain.tag.model.dto.CreateTagResponse;
 import com.diary.domain.tag.model.dto.FindTagResponse;
-import com.diary.domain.tag.model.dto.GetTagResponse;
 import com.diary.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -93,15 +92,15 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public List<GetTagResponse> getTags(Post post) {
-        List<Tag> tags = tagRepository.findAllByPost(post);
-        List<GetTagResponse> getTagResponses= new ArrayList<>();
-        if (!CollectionUtils.isEmpty(tags)) {
-            for (Tag tag : tags) {
-                getTagResponses.add(GetTagResponse.of(tag.getTagType().toString(), tag.getTagName()));
-            }
+    @Transactional
+    public List<FindTagResponse> getTags(Post post) {
+        List<FindTagResponse> responses = new ArrayList<>();
+
+        List<TagType> tagTypes = Arrays.asList(TagType.JOB, TagType.ABILITY, TagType.STACK);
+        for (TagType tagType : tagTypes) {
+            responses.add(FindTagResponse.of(tagType, tagRepository.findTagNameByPostAndTagType(post.getId(), tagType)));
         }
-        return getTagResponses;
+        return responses;
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
-import com.diary.domain.tag.model.dto.GetTagResponse;
+import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -124,7 +124,7 @@ public class PostServiceImpl implements PostService {
 
         //experiences, tags, files 받아오기
         List<GetExperienceResponse> experiences = experienceService.getExperiences(post);
-        List<GetTagResponse> tags = tagService.getTags(post);
+        List<FindTagResponse> tags = tagService.getTags(post);
         List<GetFileResponse> files = fileService.getFiles(post);
 
         return GetPostResponse.of(postId, post.getTitle(), post.getBeginAt(), post.getFinishAt(),
