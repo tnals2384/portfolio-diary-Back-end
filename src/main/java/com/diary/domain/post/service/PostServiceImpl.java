@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
 
         //tag 저장
         if (!postRequest.getTags().isEmpty()) {
-            tagService.createTag(post.getId(), postRequest.getTags());
+            tagService.createTag(post.getId(), postRequest.getTags(), loginMember);
         }
 
         //experience 저장
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
         fileService.updateFiles(post, files);
 
         //tag update
-        tagService.updateTags(post, request.getTags());
+        tagService.updateTags(post, request.getTags(), loginMember);
 
         return UpdatePostResponse.of(postId);
     }
