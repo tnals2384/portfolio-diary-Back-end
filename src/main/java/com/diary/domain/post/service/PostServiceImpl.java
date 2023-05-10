@@ -148,12 +148,22 @@ public class PostServiceImpl implements PostService {
                         post.getTitle(),
                         post.getBeginAt(),
                         post.getFinishAt(),
-                        tagService.getTags(post)
+                        tagService.findTagName(loginMember, post.getId())
                 )
         ).getContent();
 
         //totalPage, totalPosts 를 포함하여 GetPagePostsResponse 로 반환
         return GetPagePostsResponse.of(pagePosts, totalPages, totalPosts);
 
+    }
+
+    @Override
+    @Transactional
+    public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
+        List<GetPostsResponse> responses = postRepository.findPostsByTagName(loginMember, tagName, orderType, pageable);
+        for (GetPostsResponse response : responses){
+            response.updateTagName(tagService.findTagName(loginMember, response.getPostId()));
+        }
+        return responses;
     }
 }

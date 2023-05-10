@@ -27,4 +27,16 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .orderBy(memberTag.tag.tagName.count().desc())
                 .fetch();
     }
+
+    @Override
+    public List<String> findTagNameByMemberAndPost(Member member, Long postId) {
+        return queryFactory
+                .select(memberTag.tag.tagName)
+                .from(memberTag)
+                .where(memberTag.member.eq(member),
+                        memberTag.tag.post.id.eq(postId))
+                .groupBy(memberTag.tag.tagName)
+                .orderBy(memberTag.tag.tagName.count().desc())
+                .fetch();
+    }
 }
