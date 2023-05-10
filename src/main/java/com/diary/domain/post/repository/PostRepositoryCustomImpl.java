@@ -1,5 +1,6 @@
 package com.diary.domain.post.repository;
 
+import com.diary.common.base.BaseStatus;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.GetPostsResponse;
@@ -34,7 +35,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         //pageable의 offset과 pageSize를 통해 한 페이지 조회
         List<Post> result = queryFactory
                 .selectFrom(post)
-                .where(post.member.id.eq(memberId))
+                .where(post.member.id.eq(memberId),
+                        post.status.eq(BaseStatus.ACTIVE))
                 .orderBy(order)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -44,7 +46,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         Long total = queryFactory
                 .select(post.id.count())
                 .from(post).
-                where(post.member.id.eq(memberId))
+                where(post.member.id.eq(memberId),
+                        post.status.eq(BaseStatus.ACTIVE))
                 .fetchFirst();
 
         return new PageImpl<>(result, pageable, total);
@@ -60,6 +63,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         post.finishAt.as("finishAt")
                 ))
                 .from(post)
+                .where(post.status.eq(BaseStatus.ACTIVE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()

@@ -1,5 +1,6 @@
 package com.diary.domain.tag.repository;
 
+import com.diary.common.base.BaseStatus;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.tag.model.TagType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,7 +23,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .select(memberTag.tag.tagName)
                 .from(memberTag)
                 .join(member).on(member.id.eq(memberId))
-                .where(memberTag.tag.tagType.eq(tagType))
+                .where(memberTag.tag.tagType.eq(tagType)
+                    ,memberTag.tag.status.eq(BaseStatus.ACTIVE))
                 .groupBy(memberTag.tag.tagName)
                 .orderBy(memberTag.tag.tagName.count().desc())
                 .fetch();
@@ -34,7 +36,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .select(memberTag.tag.tagName)
                 .from(memberTag)
                 .where(memberTag.member.eq(member),
-                        memberTag.tag.post.id.eq(postId))
+                        memberTag.tag.post.id.eq(postId)
+                        ,memberTag.tag.status.eq(BaseStatus.ACTIVE))
                 .groupBy(memberTag.tag.tagName)
                 .orderBy(memberTag.tag.tagName.count().desc())
                 .fetch();
