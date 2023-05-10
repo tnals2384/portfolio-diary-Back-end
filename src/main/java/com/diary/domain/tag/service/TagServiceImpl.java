@@ -11,6 +11,7 @@ import com.diary.domain.tag.model.Tag;
 import com.diary.domain.tag.model.TagType;
 import com.diary.domain.tag.model.dto.CreateTagResponse;
 import com.diary.domain.tag.model.dto.FindTagResponse;
+import com.diary.domain.tag.model.dto.GetTagResponse;
 import com.diary.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,18 +91,17 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    //getPost 시 Map<String(타입), String(태그이름)>으로 tags get 가능하도록 함
-    @Override
-    public Map<String, String> getTags(Post post) {
-        List<Tag> tags = tagRepository.findAllByPost(post);
-        Map<String, String> responseTags = new HashMap<>();
 
+    @Override
+    public List<GetTagResponse> getTags(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+        List<GetTagResponse> getTagResponses= new ArrayList<>();
         if (!CollectionUtils.isEmpty(tags)) {
             for (Tag tag : tags) {
-                responseTags.put(tag.getTagType().toString(), tag.getTagName());
+                getTagResponses.add(GetTagResponse.of(tag.getTagType().toString(), tag.getTagName()));
             }
         }
-        return responseTags;
+        return getTagResponses;
     }
 
     @Override

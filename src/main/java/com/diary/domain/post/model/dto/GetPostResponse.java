@@ -1,6 +1,8 @@
 package com.diary.domain.post.model.dto;
 
 
+import com.diary.domain.tag.model.dto.FindTagResponse;
+import com.diary.domain.tag.model.dto.GetTagResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -24,13 +27,12 @@ public class GetPostResponse {
 
     //title, content
     private Map<String,String> experiences;
-    //tagType, tag이름
-    private Map<String,String> tags;
+    private List<GetTagResponse> getTagResponses;
     //file이름, fileUrl
     private Map<String,String> files;
 
-    public static GetPostResponse of(Long postId,String title, LocalDateTime beginAt
-        ,LocalDateTime finishAt, Map<String,String> experiences, Map<String,String> tags,Map<String,String> files) {
-        return new GetPostResponse(postId,title,beginAt,finishAt,experiences,tags,files);
+    public static GetPostResponse of(Long postId, String title, LocalDateTime beginAt
+        , LocalDateTime finishAt, Map<String,String> experiences, List<GetTagResponse> getTagResponses, Map<String,String> files) {
+        return new GetPostResponse(postId,title,beginAt,finishAt,experiences,getTagResponses,files);
     }
 }
