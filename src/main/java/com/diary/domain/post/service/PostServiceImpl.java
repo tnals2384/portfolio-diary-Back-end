@@ -3,6 +3,7 @@ package com.diary.domain.post.service;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.service.ExperienceService;
+import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
@@ -125,7 +126,7 @@ public class PostServiceImpl implements PostService {
         //Map으로 experiences, tags, files 받아오기
         Map<String, String> experiences = experienceService.getExperiences(post);
         List<GetTagResponse> tags = tagService.getTags(post);
-        Map<String, String> files = fileService.getFiles(post);
+        List<GetFileResponse> files = fileService.getFiles(post);
 
         return GetPostResponse.of(postId, post.getTitle(), post.getBeginAt(), post.getFinishAt(),
                 experiences, tags, files);
