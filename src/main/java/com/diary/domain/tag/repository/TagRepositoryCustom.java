@@ -8,4 +8,7 @@ import java.util.List;
 public interface TagRepositoryCustom {
     List<String> findTagNameByMemberAndTagType(Long memberId, TagType tagType);
     List<String> findTagNameByMemberAndPost(Member member, Long postId);
-}
+
+    List<String> findTagNameByPostAndTagType(Long postId, TagType tagType);
+
+    }

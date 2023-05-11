@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.file.model.File;
+import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.file.repository.FileRepository;
 import com.diary.domain.post.model.Post;
@@ -129,18 +130,19 @@ public class FileServiceImpl implements FileService {
     }
 
 
-    //getPost 시 Map<String(파일이름), String(파일url)>으로 files get 가능하도록 함
     @Override
-    public Map<String, String> getFiles(Post post) {
+    public List<GetFileResponse> getFiles(Post post) {
         List<File> files = fileRepository.findAllByPost(post);
-        Map<String, String> responseFiles = new HashMap<>();
+        List<GetFileResponse> getFileResponses = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(files)) {
             for (File file : files) {
-                responseFiles.put(file.getOrigFileName(), file.getFilePath());
+                getFileResponses.add(
+                        GetFileResponse.of(file.getOrigFileName(), file.getFilePath())
+                );
             }
         }
-        return responseFiles;
+        return getFileResponses;
     }
 
 
