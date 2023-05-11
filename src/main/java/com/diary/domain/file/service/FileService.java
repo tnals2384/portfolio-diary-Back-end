@@ -15,5 +15,7 @@ public interface FileService {
 
     void updateFiles(Post post, List<MultipartFile> files) throws IOException;
     Map<String,String> getFiles(Post post);
+    void softDeleteFiles(Post post);
+
 
     }

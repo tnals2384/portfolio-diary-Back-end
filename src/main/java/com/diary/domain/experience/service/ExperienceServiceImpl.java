@@ -67,7 +67,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
     }
 
-    //experience 삭제
+    //experience 삭제 (완전 삭재)
     @Override
     @Transactional
     public void deleteExperiences(Post post) {
@@ -77,6 +77,17 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
     }
 
+    //experience 삭제 (softDelete로 Status만 변경)
+    @Override
+    @Transactional
+    public void softDeleteExperiences(Post post) {
+        List<Experience> experiences = experienceRepository.findAllByPost(post);
+        if(!CollectionUtils.isEmpty(experiences)) {
+            for(Experience experience: experiences) {
+                experience.changeStatus(experience.getStatus());
+            }
+        }
+    }
 
     //getPost 시 Map<String(제목), String(내용)>으로 experiences get 가능하도록 함
     @Override

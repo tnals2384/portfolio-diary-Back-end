@@ -13,6 +13,7 @@ public interface TagService {
     CreateTagResponse createTag(Long postId, Map<String,String> tags, Member member) throws IOException;
     void updateTags(Post post, Map<String, String> tags, Member member) throws IOException;
     void deleteTags(Post post);
+     void softDeleteTags(Post post);
     Map<String, String> getTags(Post post);
     List<FindTagResponse> findTagList(Long memberId);
     List<String> findTagName(Member member, Long postId);

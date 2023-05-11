@@ -86,7 +86,7 @@ public class FileServiceImpl implements FileService {
     }
 
 
-    //파일 삭제 기능
+    //파일 삭제 기능 (완전 삭졔)
     @Override
     @Transactional
     public void deleteFiles(Post post) {
@@ -98,6 +98,21 @@ public class FileServiceImpl implements FileService {
                 amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
                 //repository에서 파일 삭제
                 fileRepository.delete(file);
+            }
+
+        }
+    }
+
+    //파일 삭제 기능 (softDelete로 Status만 변경)
+    @Override
+    @Transactional
+    public void softDeleteFiles(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+
+        if (!CollectionUtils.isEmpty(files)) {
+            for (File file : files) {
+                //respository에서 상태 변경
+                file.changeStatus(file.getStatus());
             }
 
         }
