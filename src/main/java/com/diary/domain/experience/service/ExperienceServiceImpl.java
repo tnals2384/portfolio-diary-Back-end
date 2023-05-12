@@ -4,6 +4,7 @@ import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.model.Experience;
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
+import com.diary.domain.experience.model.dto.GetExperienceResponse;
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
 import com.diary.domain.experience.repository.ExperienceRepository;
 import com.diary.domain.post.model.Post;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -91,16 +92,18 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     //getPost 시 Map<String(제목), String(내용)>으로 experiences get 가능하도록 함
     @Override
-    public Map<String, String> getExperiences(Post post) {
+    public List<GetExperienceResponse> getExperiences(Post post) {
         List<Experience> experiences = experienceRepository.findAllByPost(post);
-        Map<String,String> responseExperiences = new HashMap<>();
+        List<GetExperienceResponse> responses= new ArrayList<>();
 
         if(!CollectionUtils.isEmpty(experiences)) {
             for(Experience ex: experiences) {
-                responseExperiences.put(ex.getTitle(),ex.getContents());
+                responses.add(
+                        GetExperienceResponse.of(ex.getTitle(),ex.getContents())
+                );
             }
         }
-        return responseExperiences;
+        return responses;
     }
 
 

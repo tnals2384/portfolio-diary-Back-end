@@ -2,12 +2,15 @@ package com.diary.domain.post.service;
 
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
+import com.diary.domain.experience.model.dto.GetExperienceResponse;
 import com.diary.domain.experience.service.ExperienceService;
+import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
+import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -122,10 +123,10 @@ public class PostServiceImpl implements PostService {
             throw new RestApiException(ErrorCode.BAD_REQUEST);
         }
 
-        //Map으로 experiences, tags, files 받아오기
-        Map<String, String> experiences = experienceService.getExperiences(post);
-        Map<String, String> tags = tagService.getTags(post);
-        Map<String, String> files = fileService.getFiles(post);
+        //experiences, tags, files 받아오기
+        List<GetExperienceResponse> experiences = experienceService.getExperiences(post);
+        List<FindTagResponse> tags = tagService.getTags(post);
+        List<GetFileResponse> files = fileService.getFiles(post);
 
         return GetPostResponse.of(postId, post.getTitle(), post.getBeginAt(), post.getFinishAt(),
                 experiences, tags, files);
@@ -162,7 +163,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
         List<GetPostsResponse> responses = postRepository.findPostsByTagName(loginMember, tagName, orderType, pageable);
-        for (GetPostsResponse response : responses){
+        for (GetPostsResponse response : responses) {
             response.updateTagName(tagService.findTagName(loginMember, response.getPostId()));
         }
         return responses;

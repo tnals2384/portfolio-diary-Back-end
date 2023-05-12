@@ -1,6 +1,7 @@
 package com.diary.domain.experience.service;
 
 import com.diary.domain.experience.model.dto.CreateExperienceResponse;
+import com.diary.domain.experience.model.dto.GetExperienceResponse;
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
 import com.diary.domain.post.model.Post;
 
@@ -17,5 +18,5 @@ public interface ExperienceService {
     void deleteExperiences(Post post);
     void softDeleteExperiences(Post post);
 
-    Map<String, String> getExperiences(Post post);
+    List<GetExperienceResponse> getExperiences(Post post);
 }

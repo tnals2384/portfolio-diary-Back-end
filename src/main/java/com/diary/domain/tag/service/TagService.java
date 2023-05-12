@@ -15,7 +15,7 @@ public interface TagService {
     void updateTags(Post post, List<CreateTagRequest> tags, Member member) throws IOException;
     void deleteTags(Post post);
      void softDeleteTags(Post post);
-    Map<String, String> getTags(Post post);
+    List<FindTagResponse> getTags(Post post);
     List<FindTagResponse> findTagList(Long memberId);
     List<String> findTagName(Member member, Long postId);
 }
