@@ -10,7 +10,7 @@ import java.util.List;
 
 import static com.diary.domain.member.model.QMember.member;
 import static com.diary.domain.memberTag.model.QMemberTag.memberTag;
-
+import static com.diary.domain.tag.model.QTag.tag;
 
 
 @RequiredArgsConstructor
@@ -40,6 +40,16 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         ,memberTag.tag.status.eq(BaseStatus.ACTIVE))
                 .groupBy(memberTag.tag.tagName)
                 .orderBy(memberTag.tag.tagName.count().desc())
+                .fetch();
+    }
+
+    @Override
+    public List<String> findTagNameByTagTypeAndPost(Long postId,TagType tagType) {
+        return queryFactory
+                .select(tag.tagName)
+                .from(tag)
+                .where(tag.post.id.eq(postId),
+                        tag.tagType.eq(tagType))
                 .fetch();
     }
 }

@@ -96,18 +96,15 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    //getPost 시 Map<String(타입), String(태그이름)>으로 tags get 가능하도록 함
     @Override
-    public Map<String, String> getTags(Post post) {
-        List<Tag> tags = tagRepository.findAllByPost(post);
-        Map<String, String> responseTags = new HashMap<>();
+    public List<FindTagResponse> getTags(Long postId) {
+        List<FindTagResponse> responses = new ArrayList<>();
 
-        if (!CollectionUtils.isEmpty(tags)) {
-            for (Tag tag : tags) {
-                responseTags.put(tag.getTagType().toString(), tag.getTagName());
-            }
+        List<TagType> tagTypes = Arrays.asList(TagType.JOB, TagType.ABILITY, TagType.STACK);
+        for (TagType tagType : tagTypes) {
+            responses.add(FindTagResponse.of(tagType, tagRepository.findTagNameByTagTypeAndPost(postId, tagType)));
         }
-        return responseTags;
+        return responses;
     }
 
     @Override

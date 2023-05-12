@@ -8,6 +8,7 @@ import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.*;
 import com.diary.domain.post.repository.PostRepository;
+import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -122,10 +123,12 @@ public class PostServiceImpl implements PostService {
             throw new RestApiException(ErrorCode.BAD_REQUEST);
         }
 
-        //Map으로 experiences, tags, files 받아오기
+        //Map으로 experiences, files 받아오기
         Map<String, String> experiences = experienceService.getExperiences(post);
-        Map<String, String> tags = tagService.getTags(post);
         Map<String, String> files = fileService.getFiles(post);
+
+        //tagType별로 tags 받아오기
+        List<FindTagResponse> tags = tagService.getTags(postId);
 
         return GetPostResponse.of(postId, post.getTitle(), post.getBeginAt(), post.getFinishAt(),
                 experiences, tags, files);
