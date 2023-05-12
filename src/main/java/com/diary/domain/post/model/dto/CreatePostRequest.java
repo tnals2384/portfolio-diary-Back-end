@@ -3,6 +3,7 @@ package com.diary.domain.post.model.dto;
 
 import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
+import com.diary.domain.tag.model.dto.CreateTagRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -22,7 +24,7 @@ public class CreatePostRequest {
     @NotNull
     private LocalDateTime finishAt;
 
-    private Map<@NotEmpty String, @NotBlank String> tags;
+    private List<CreateTagRequest> tags;
 
     private Map<@NotEmpty String, @NotBlank String> experiences;
 

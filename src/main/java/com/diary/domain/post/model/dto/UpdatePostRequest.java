@@ -1,6 +1,7 @@
 package com.diary.domain.post.model.dto;
 
 import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
+import com.diary.domain.tag.model.dto.CreateTagRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,7 @@ public class UpdatePostRequest {
     @NotNull
     private LocalDateTime finishAt;
 
-    private Map<@NotEmpty String, @NotBlank String> tags;
-
+    private List<CreateTagRequest> tags;
 
     private List<UpdateExperienceRequest> experiences;
     //새로 추가하는 experiences
