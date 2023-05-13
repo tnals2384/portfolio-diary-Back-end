@@ -58,7 +58,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public UpdatePostResponse updatePost(Member loginMember, Long postId, UpdatePostRequest request, List<MultipartFile> files) throws IOException {
+    public UpdatePostResponse updatePost(Member loginMember, Long postId, UpdatePostRequest request,
+                                         List<MultipartFile> files) throws IOException {
         //postId로 post 조회
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(ErrorCode.NOT_FOUND)

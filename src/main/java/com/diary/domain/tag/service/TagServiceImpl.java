@@ -9,6 +9,7 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import com.diary.domain.tag.model.Tag;
 import com.diary.domain.tag.model.TagType;
+import com.diary.domain.tag.model.dto.CreateTagRequest;
 import com.diary.domain.tag.model.dto.CreateTagResponse;
 import com.diary.domain.tag.model.dto.FindTagResponse;
 import com.diary.domain.tag.repository.TagRepository;
@@ -31,24 +32,29 @@ public class TagServiceImpl implements TagService {
     //태그 생성
     @Override
     @Transactional
-    public CreateTagResponse createTag(Long postId, Map<String, String> tags, Member member) throws IOException {
+    public CreateTagResponse createTag(Long postId, List<CreateTagRequest> tags, Member member) throws IOException {
 
         List<Long> tagList = new ArrayList<>();
+
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(ErrorCode.NOT_FOUND)
         );
 
-        for (Map.Entry<String, String> t : tags.entrySet()) {
+        for (CreateTagRequest tagsInTagType : tags) {
             //tagType으로 변환
-            TagType type = TagType.of(t.getKey());
+            TagType type = TagType.of(tagsInTagType.getTagType());
 
-            //newTag 만들어 저장
-            Tag tag = tagRepository.save(Tag.newTag(type, t.getValue(), post));
+            //같은 type을 가진 tagName들의 List
+            List<String> tagNameList = tagsInTagType.getTagName();
+            for(String tagName : tagNameList) {
+                //newTag 만들어 저장
+                Tag tag = tagRepository.save(Tag.newTag(type, tagName, post));
 
-            //member tag 관계 테이블
-            memberTagRepository.save(MemberTag.of(member,tag));
+                //member tag 관계 테이블
+                memberTagRepository.save(MemberTag.of(member, tag));
 
-            tagList.add(tag.getId());
+                tagList.add(tag.getId());
+            }
         }
 
         return CreateTagResponse.of(tagList);
@@ -57,7 +63,7 @@ public class TagServiceImpl implements TagService {
     //태그 업데이트. (지웠다가 다시 생성)
     @Override
     @Transactional
-    public void updateTags(Post post, Map<String, String> tags, Member member) throws IOException {
+    public void updateTags(Post post, List<CreateTagRequest> tags, Member member) throws IOException {
         deleteTags(post);
         if (!CollectionUtils.isEmpty(tags)) {
             createTag(post.getId(), tags, member);
