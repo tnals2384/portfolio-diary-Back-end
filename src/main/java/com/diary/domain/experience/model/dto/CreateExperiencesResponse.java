@@ -5,13 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateExperienceResponse {
-    private Long experienceId;
+public class CreateExperiencesResponse {
+    private List<Long> experiences;
 
-    public static CreateExperienceResponse of(Long experienceId) {
-        return new CreateExperienceResponse(experienceId);
+    public static CreateExperiencesResponse of(List<Long> experiencesId) {
+        return new CreateExperiencesResponse(experiencesId);
     }
 }
