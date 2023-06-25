@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +65,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void updateTags(Post post, List<CreateTagRequest> tags, Member member) throws IOException {
+        List<Tag> oldTags = tagRepository.findAllByPost(post);
         deleteTags(post);
         if (!CollectionUtils.isEmpty(tags)) {
             createTag(post.getId(), tags, member);
@@ -76,8 +78,12 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public void deleteTags(Post post) {
         List<Tag> tags = tagRepository.findAllByPost(post);
+        List<Long> tagIds = tags.stream()
+                .map(Tag::getId)
+                .collect(Collectors.toList());
 
         if (!CollectionUtils.isEmpty(tags)) {
+            memberTagRepository.deleteAllById(tagIds);
             tagRepository.deleteAll(tags);
         }
     }

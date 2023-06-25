@@ -57,6 +57,5 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .groupBy(tag.tagName)
                 .orderBy(tag.tagName.count().desc())
                 .fetch();
-
     }
 }
