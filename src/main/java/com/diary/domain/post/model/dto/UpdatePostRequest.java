@@ -25,7 +25,7 @@ public class UpdatePostRequest {
 
     private List<CreateTagRequest> tags;
 
-    private List<UpdateExperienceRequest> experiences;
+    //private List<UpdateExperienceRequest> experiences;
     //새로 추가하는 experiences
-    private Map<@NotEmpty String, @NotBlank String> newExperiences;
+    //private Map<@NotEmpty String, @NotBlank String> newExperiences;
 }

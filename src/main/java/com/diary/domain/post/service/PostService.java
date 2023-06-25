@@ -11,7 +11,7 @@ import java.util.List;
 public interface PostService {
     CreatePostResponse createPost(Member loginMember, CreatePostRequest request, List<MultipartFile> files) throws IOException;
 
-    UpdatePostResponse updatePost(Member loginMember, Long postId, UpdatePostRequest request, List<MultipartFile> files) throws IOException;
+    UpdatePostResponse updatePost(Member loginMember, Long postId, UpdatePostRequest request) throws IOException;
 
     DeletePostResponse deletePost(Member loginMember, Long postId);
 
