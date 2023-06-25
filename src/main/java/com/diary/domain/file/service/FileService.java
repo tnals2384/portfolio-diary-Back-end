@@ -2,6 +2,7 @@ package com.diary.domain.file.service;
 
 import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
+import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ public interface FileService {
 
     void deleteFiles(Post post);
 
-    void updateFiles(Post post, List<MultipartFile> files) throws IOException;
+    UploadFileResponse updateFiles(Member loginMember,Long postId, List<MultipartFile> files) throws IOException;
     List<GetFileResponse> getFiles(Post post);
     void softDeleteFiles(Post post);
 
