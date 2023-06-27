@@ -7,10 +7,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetExperienceResponse {
+    private Long experienceId;
     private String title;
     private String content;
 
-    public static GetExperienceResponse of(String title, String content) {
-        return new GetExperienceResponse(title,content);
+    public static GetExperienceResponse of(Long experienceId,String title, String content) {
+        return new GetExperienceResponse(experienceId,title,content);
     }
 }

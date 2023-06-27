@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateExperienceResponse {
-    private Long experienceId;
+public class UpdateExperienceResponse {
+    Long experienceId;
 
-    public static CreateExperienceResponse of(Long experienceId) {
-        return new CreateExperienceResponse(experienceId);
+    public static UpdateExperienceResponse of(Long experienceId) {
+        return new UpdateExperienceResponse(experienceId);
     }
 }

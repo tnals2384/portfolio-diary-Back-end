@@ -24,27 +24,27 @@ public class Experience extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private String contents;
+    private String content;
 
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Experience(String title, String contents,Post post) {
+    private Experience(String title, String content,Post post) {
         this.title = title;
-        this.contents = contents;
+        this.content = content;
         this.post = post;
     }
 
-    public static Experience newExperience(String title, String contents, Post post){
+    public static Experience newExperience(String title, String content, Post post){
         return Experience.builder()
                 .title(title)
-                .contents(contents)
+                .content(content)
                 .post(post)
                 .build();
     }
 
-    public void update(String title,String contents) {
+    public void update(String title,String content) {
         this.title=title;
-        this.contents=contents;
+        this.content=content;
     }
 
 }

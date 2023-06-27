@@ -40,11 +40,10 @@ public class PostController {
     public BaseResponse<UpdatePostResponse> updatePost(
             @MemberId Long memberId,
             @PathVariable @Valid Long postId,
-            @RequestPart @Valid UpdatePostRequest updatePostRequest,
-            @RequestPart(value = "file", required = false) List<MultipartFile> files) throws IOException {
+            @RequestPart @Valid UpdatePostRequest updatePostRequest) throws IOException {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
-        return new BaseResponse<>(postService.updatePost(loginMember, postId, updatePostRequest, files));
+        return new BaseResponse<>(postService.updatePost(loginMember, postId, updatePostRequest));
     }
 
 

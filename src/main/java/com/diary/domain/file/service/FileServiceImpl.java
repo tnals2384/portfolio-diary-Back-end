@@ -12,6 +12,7 @@ import com.diary.domain.file.model.File;
 import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.file.repository.FileRepository;
+import com.diary.domain.member.model.Member;
 import com.diary.domain.post.model.Post;
 import com.diary.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,6 @@ public class FileServiceImpl implements FileService {
     public UploadFileResponse uploadFiles(Long postId, List<MultipartFile> files) throws IOException {
 
         List<Long> fileList = new ArrayList<>();
-
         Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
 
 
@@ -122,10 +122,22 @@ public class FileServiceImpl implements FileService {
     //파일 업데이트. 파일 지웠다가 다시 upload
     @Override
     @Transactional
-    public void updateFiles(Post post, List<MultipartFile> files) throws IOException {
+    public UploadFileResponse updateFiles(Member loginMember,Long postId, List<MultipartFile> files) throws IOException {
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+
+        //login한 member와 post의 member가 다르면 error
+        if (!loginMember.equals(post.getMember())) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+
+        //삭제 후 file 다시 추가
         deleteFiles(post);
         if (!CollectionUtils.isEmpty(files)) {
-            uploadFiles(post.getId(), files);
+            return uploadFiles(post.getId(), files);
+        }
+        else {
+            return UploadFileResponse.of(new ArrayList<>());
         }
     }
 
