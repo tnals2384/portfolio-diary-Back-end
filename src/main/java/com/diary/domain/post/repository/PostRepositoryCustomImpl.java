@@ -57,8 +57,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<GetPostsResponse> findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
-        return queryFactory
+    public Page<GetPostsResponse> findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
+        List<GetPostsResponse> result = queryFactory
                 .select(Projections.fields(GetPostsResponse.class,
                         post.id.as("postId"),
                         post.title.as("title"),
@@ -79,5 +79,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
+
+        Long total = queryFactory
+                .select(post.id.count())
+                .from(post)
+                .where(post.status.eq(BaseStatus.ACTIVE))
+                .where(post.id.in(
+                        JPAExpressions
+                                .select(tag.post.id)
+                                .from(tag)
+                                .where(tag.tagName.in(tagNames))
+                                .groupBy(tag.post.id)
+                                .having(tag.count().eq(Long.valueOf(tagNames.size())))
+                )).fetchFirst();
+        return new PageImpl<>(result, pageable, total);
     }
 }
