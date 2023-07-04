@@ -6,6 +6,8 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.GetPostsResponse;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.SubQueryExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.diary.domain.post.model.QPost.post;
+import static com.diary.domain.tag.model.QTag.tag;
 
 @RequiredArgsConstructor
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
@@ -54,7 +57,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
+    public List<GetPostsResponse> findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
         return queryFactory
                 .select(Projections.fields(GetPostsResponse.class,
                         post.id.as("postId"),
@@ -64,6 +67,14 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 ))
                 .from(post)
                 .where(post.status.eq(BaseStatus.ACTIVE))
+                .where(post.id.in(
+                        JPAExpressions
+                                .select(tag.post.id)
+                                .from(tag)
+                                .where(tag.tagName.in(tagNames))
+                                .groupBy(tag.post.id)
+                                .having(tag.count().eq(Long.valueOf(tagNames.size())))
+                ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .distinct()
