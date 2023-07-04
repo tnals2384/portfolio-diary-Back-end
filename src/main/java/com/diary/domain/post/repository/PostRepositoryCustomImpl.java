@@ -79,6 +79,5 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .distinct()
                 .fetch();
-
     }
 }

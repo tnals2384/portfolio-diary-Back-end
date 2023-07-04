@@ -151,11 +151,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public List<GetPostsResponse> findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
+    public GetPagePostsResponse findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
         List<GetPostsResponse> responses = postRepository.findPostsByTagNames(loginMember, tagNames, orderType, pageable);
+
+        int totalPages = responses.size()/10 +1;
+        int totalPosts = responses.size();
+
+
         for (GetPostsResponse response : responses) {
             response.updateTagName(tagService.findTagName(loginMember, response.getPostId()));
         }
-        return responses;
+        return GetPagePostsResponse.of(responses, totalPages,totalPosts);
     }
 }

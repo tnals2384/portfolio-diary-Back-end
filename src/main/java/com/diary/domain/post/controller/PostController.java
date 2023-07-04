@@ -75,7 +75,7 @@ public class PostController {
 
     //Post tag별 목록 조회
     @GetMapping("/posts/tag")
-    public BaseResponse<List<GetPostsResponse>> findPostsByTagNames(
+    public BaseResponse<GetPagePostsResponse> findPostsByTagNames(
             @MemberId Long memberId,
             @RequestParam("tag") List<String> tagNames,
             @RequestParam(defaultValue = "id", value = "orderBy") String orderType,
