@@ -151,11 +151,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public List<GetPostsResponse> findPostsByTagName(Member loginMember, String tagName, String orderType, Pageable pageable) {
-        List<GetPostsResponse> responses = postRepository.findPostsByTagName(loginMember, tagName, orderType, pageable);
+    public GetPagePostsResponse findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable) {
+        Page<GetPostsResponse> responses = postRepository.findPostsByTagNames(loginMember, tagNames, orderType, pageable);
+
+        int totalPages = responses.getTotalPages();
+        int totalPosts = (int) responses.getTotalElements(); //long형을 int형으로 받음
+
         for (GetPostsResponse response : responses) {
             response.updateTagName(tagService.findTagName(loginMember, response.getPostId()));
         }
-        return responses;
+        List<GetPostsResponse> pagePosts = responses.getContent();
+
+        return GetPagePostsResponse.of(pagePosts, totalPages,totalPosts);
     }
 }

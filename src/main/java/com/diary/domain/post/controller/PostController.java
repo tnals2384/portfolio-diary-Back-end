@@ -75,14 +75,14 @@ public class PostController {
 
     //Post tag별 목록 조회
     @GetMapping("/posts/tag")
-    public BaseResponse<List<GetPostsResponse>> findPostsByTagName(
+    public BaseResponse<GetPagePostsResponse> findPostsByTagNames(
             @MemberId Long memberId,
-            @RequestParam("tag") String tagName,
+            @RequestParam("tag") List<String> tagNames,
             @RequestParam(defaultValue = "id", value = "orderBy") String orderType,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
-        return new BaseResponse<>(postService.findPostsByTagName(loginMember, tagName, orderType, pageable));
+        return new BaseResponse<>(postService.findPostsByTagNames(loginMember, tagNames, orderType, pageable));
     }
 
 }
