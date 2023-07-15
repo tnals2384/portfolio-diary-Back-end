@@ -4,10 +4,7 @@ import com.diary.common.base.BaseResponse;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.config.auth.MemberId;
-import com.diary.domain.experience.model.dto.CreateExperienceRequest;
-import com.diary.domain.experience.model.dto.CreateExperienceResponse;
-import com.diary.domain.experience.model.dto.UpdateExperienceRequest;
-import com.diary.domain.experience.model.dto.UpdateExperienceResponse;
+import com.diary.domain.experience.model.dto.*;
 import com.diary.domain.experience.service.ExperienceService;
 import com.diary.domain.member.model.Member;
 import com.diary.domain.member.repository.MemberRepository;
@@ -51,6 +48,15 @@ public class ExperienceController {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
         return new BaseResponse<>(experienceService.updateExperience(loginMember, experienceId, updateExperienceRequest));
+    }
+
+    @DeleteMapping("/experiences/{experienceId}")
+    public BaseResponse<DeleteExperienceResponse> deleteExperience(
+            @MemberId Long memberId,
+            @PathVariable @Valid Long experienceId) {
+
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        return new BaseResponse<>(experienceService.deleteExperience(loginMember,experienceId));
     }
 
 }

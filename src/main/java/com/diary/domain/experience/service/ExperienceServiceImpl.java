@@ -86,6 +86,22 @@ public class ExperienceServiceImpl implements ExperienceService {
         return UpdateExperienceResponse.of(experienceId);
     }
 
+    public DeleteExperienceResponse deleteExperience(Member loginMember, Long experienceId) {
+        Experience experience = experienceRepository.findById(experienceId).orElseThrow(
+                () -> new RestApiException(ErrorCode.NOT_FOUND)
+        );
+
+        //login한 member와 post의 member가 다르면 error
+        if (!loginMember.equals(experience.getPost().getMember())) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+
+        experienceRepository.delete(experience);
+
+        return DeleteExperienceResponse.of(experienceId);
+    }
+
+
     //experience 삭제 (완전 삭재)
     @Override
     @Transactional
