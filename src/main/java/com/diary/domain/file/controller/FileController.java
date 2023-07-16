@@ -4,6 +4,7 @@ import com.diary.common.base.BaseResponse;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.config.auth.MemberId;
+import com.diary.domain.file.model.dto.DeleteFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.file.service.FileService;
 import com.diary.domain.member.model.Member;
@@ -25,13 +26,23 @@ public class FileController {
     private final FileService fileService;
     private final MemberRepository memberRepository;
 
-    @PutMapping("/posts/{postId}/file")
-    public BaseResponse<UploadFileResponse> updateFile(
+
+    @PutMapping("/posts/{postId}/files")
+    public BaseResponse<UploadFileResponse> addFiles(
             @MemberId Long memberId,
             @PathVariable @Valid Long postId,
             @RequestPart(value = "file", required = false) List<MultipartFile> files) throws IOException {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
-        return new BaseResponse<>(fileService.updateFiles(loginMember, postId, files));
+        return new BaseResponse<>(fileService.addFiles(loginMember, postId, files));
+    }
+
+    @DeleteMapping("/files/{fileId}")
+    public BaseResponse<DeleteFileResponse> deleteFiles(
+            @MemberId Long memberId,
+            @PathVariable @Valid Long fileId) throws IOException {
+
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        return new BaseResponse<>(fileService.deleteFile(loginMember, fileId));
     }
 }
