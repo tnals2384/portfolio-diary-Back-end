@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("/mypage")
+    @GetMapping("/mypages")
     public BaseResponse<FindMyPageUserResponse> findMyPageUser(@MemberId Long memberId){
         return new BaseResponse<>(memberService.findMyPageUser(memberId));
     }

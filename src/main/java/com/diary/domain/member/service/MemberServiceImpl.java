@@ -20,7 +20,7 @@ public class MemberServiceImpl implements MemberService {
     public FindMyPageUserResponse findMyPageUser(Long memberId) {
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
         String nickname = loginMember.getNickname();
-        Long daysSinceSignUp = ChronoUnit.DAYS.between(loginMember.getCreatedAt().toLocalDate(), LocalDate.now());
+        Long daysSinceSignUp = ChronoUnit.DAYS.between(loginMember.getCreatedAt().toLocalDate(), LocalDate.now()) + 1L;
 
         return new FindMyPageUserResponse(nickname, daysSinceSignUp);
     }
