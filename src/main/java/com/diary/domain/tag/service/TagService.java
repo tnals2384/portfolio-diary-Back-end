@@ -8,7 +8,6 @@ import com.diary.domain.tag.model.dto.FindTagResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface TagService {
     CreateTagResponse createTag(Long postId, List<CreateTagRequest> tags, Member member) throws IOException;
@@ -18,4 +17,6 @@ public interface TagService {
     List<FindTagResponse> getTags(Post post);
     List<FindTagResponse> findTagList(Long memberId);
     List<String> findTagName(Member member, Long postId);
+
+    void hardDeleteTags(Post post);
 }

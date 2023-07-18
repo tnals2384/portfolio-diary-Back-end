@@ -95,4 +95,11 @@ public class PostController {
         return new BaseResponse<>(postService.findPostsByTagNames(loginMember, tagNames, orderType, pageable));
     }
 
+    @DeleteMapping("remove/posts/{postId}")
+    public BaseResponse<String> hardDeletePost(@MemberId Long memberId, @PathVariable @Valid Long postId) {
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        postService.hardDeletePost(loginMember, postId);
+        return new BaseResponse<>("완전히 삭제되었습니다.");
+    }
+
 }

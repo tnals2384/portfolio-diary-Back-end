@@ -134,4 +134,12 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findTagNameByMemberAndPost(member, postId);
     }
 
+    @Override
+    public void hardDeleteTags(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+        if (!CollectionUtils.isEmpty(tags)) {
+            tags.forEach(tag -> tagRepository.delete(tag));
+        }
+    }
+
 }

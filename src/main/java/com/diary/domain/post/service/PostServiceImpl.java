@@ -176,4 +176,16 @@ public class PostServiceImpl implements PostService {
 
         return GetPagePostsResponse.of(pagePosts, totalPages,totalPosts);
     }
+
+    @Override
+    public void hardDeletePost(Member loginMember, Long postId) {
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+        if (loginMember.equals(post.getMember())) {
+            experienceService.hardDeleteExperiences(post);
+            tagService.hardDeleteTags(post);
+            fileService.hardDeleteFiles(post);
+            postRepository.delete(post);
+        }
+    }
 }
