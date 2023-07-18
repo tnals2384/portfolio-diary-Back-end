@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.file.model.File;
+import com.diary.domain.file.model.dto.DeleteFileResponse;
 import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.file.repository.FileRepository;
@@ -64,7 +65,6 @@ public class FileServiceImpl implements FileService {
 
             //file repository에 save
             fileList.add(fileRepository.save(newFile).getId());
-
         }
 
         return UploadFileResponse.of(fileList);
@@ -90,18 +90,14 @@ public class FileServiceImpl implements FileService {
     //파일 삭제 기능 (완전 삭졔)
     @Override
     @Transactional
-    public void deleteFiles(Post post) {
-        List<File> files = fileRepository.findAllByPost(post);
+    public DeleteFileResponse deleteFile(Member loginMember, Long fileId) {
+        File file = fileRepository.findById(fileId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+        //s3 파일 삭제
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
+        //repository에서 파일 삭제
+        fileRepository.delete(file);
 
-        if (!CollectionUtils.isEmpty(files)) {
-            for (File file : files) {
-                //s3 파일 삭제
-                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
-                //repository에서 파일 삭제
-                fileRepository.delete(file);
-            }
-
-        }
+        return DeleteFileResponse.of(fileId);
     }
 
     //파일 삭제 기능 (softDelete로 Status만 변경)
@@ -119,11 +115,10 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    //파일 업데이트. 파일 지웠다가 다시 upload
     @Override
     @Transactional
-    public UploadFileResponse updateFiles(Member loginMember,Long postId, List<MultipartFile> files) throws IOException {
-
+    //파일 추가
+    public UploadFileResponse addFiles(Member loginMember, Long postId, List<MultipartFile> files) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
 
         //login한 member와 post의 member가 다르면 error
@@ -131,16 +126,14 @@ public class FileServiceImpl implements FileService {
             throw new RestApiException(ErrorCode.BAD_REQUEST);
         }
 
-        //삭제 후 file 다시 추가
-        deleteFiles(post);
         if (!CollectionUtils.isEmpty(files)) {
             return uploadFiles(post.getId(), files);
         }
         else {
             return UploadFileResponse.of(new ArrayList<>());
         }
-    }
 
+    }
 
     @Override
     public List<GetFileResponse> getFiles(Post post) {

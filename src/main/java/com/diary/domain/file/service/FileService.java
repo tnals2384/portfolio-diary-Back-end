@@ -1,5 +1,6 @@
 package com.diary.domain.file.service;
 
+import com.diary.domain.file.model.dto.DeleteFileResponse;
 import com.diary.domain.file.model.dto.GetFileResponse;
 import com.diary.domain.file.model.dto.UploadFileResponse;
 import com.diary.domain.member.model.Member;
@@ -12,11 +13,9 @@ import java.util.Map;
 
 public interface FileService {
     UploadFileResponse uploadFiles(Long postId, List<MultipartFile> files) throws IOException;
-
-    void deleteFiles(Post post);
-
-    UploadFileResponse updateFiles(Member loginMember,Long postId, List<MultipartFile> files) throws IOException;
+    UploadFileResponse addFiles(Member loginMember, Long postId, List<MultipartFile> files) throws IOException;
     List<GetFileResponse> getFiles(Post post);
+    DeleteFileResponse deleteFile(Member loginMember, Long fileId);
     void softDeleteFiles(Post post);
 
 

@@ -16,6 +16,8 @@ public interface ExperienceService {
     UpdateExperienceResponse updateExperience(Member loginMember, Long experienceId, UpdateExperienceRequest request) throws IOException;
 
     void deleteExperiences(Post post);
+
+    DeleteExperienceResponse deleteExperience(Member loginMember, Long experienceId);
     void softDeleteExperiences(Post post);
 
     List<GetExperienceResponse> getExperiences(Post post);
