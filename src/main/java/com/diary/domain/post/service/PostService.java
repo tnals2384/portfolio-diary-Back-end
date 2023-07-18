@@ -18,6 +18,8 @@ public interface PostService {
     GetPostResponse getPost(Member loginMember, Long postId);
 
     GetPagePostsResponse getAllPostsWithPaging(Member loginMember, String orderType, Pageable pageable);
+    GetPagePostsResponse getAllRemovePostsWithPaging(Member loginMember, Pageable pageable);
+
 
     GetPagePostsResponse findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable);
 }

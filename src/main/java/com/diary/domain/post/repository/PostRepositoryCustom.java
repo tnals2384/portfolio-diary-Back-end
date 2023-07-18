@@ -10,5 +10,7 @@ import java.util.List;
 
 public interface PostRepositoryCustom {
     Page<Post> findAllWithPaging(Long memberId, String orderType, Pageable pageable);
+    Page<Post> findInActiveAllWithPaging(Long memberId, Pageable pageable);
+
     Page<GetPostsResponse> findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable);
 }

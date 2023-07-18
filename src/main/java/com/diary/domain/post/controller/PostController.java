@@ -73,6 +73,16 @@ public class PostController {
         return new BaseResponse<>(postService.getAllPostsWithPaging(loginMember, orderType, pageable));
     }
 
+    //삭제된 Post 목록 조회 with Paging
+    @GetMapping("in-active/posts")
+    public BaseResponse<GetPagePostsResponse> getAllRemovePosts(
+            @MemberId Long memberId,
+            @PageableDefault(size = 10, sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        return new BaseResponse<>(postService.getAllRemovePostsWithPaging(loginMember, pageable));
+    }
+
     //Post tag별 목록 조회
     @GetMapping("/posts/tag")
     public BaseResponse<GetPagePostsResponse> findPostsByTagNames(
