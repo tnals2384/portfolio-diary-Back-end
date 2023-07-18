@@ -39,3 +39,4 @@ out/
 src/main/resources/*.yml
 src/main/resources/*.properties
 docker/.env
+src/main/frontend/
