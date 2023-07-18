@@ -6,7 +6,6 @@ import com.diary.domain.post.model.Post;
 import com.diary.domain.post.model.dto.GetPostsResponse;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +50,31 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .from(post).
                 where(post.member.id.eq(memberId),
                         post.status.eq(BaseStatus.ACTIVE))
+                .fetchFirst();
+
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    @Override
+    public Page<Post> findInActiveAllWithPaging(Long memberId, Pageable pageable) {
+        List<Post> result = queryFactory
+                .selectFrom(post)
+                .where(
+                        post.member.id.eq(memberId)
+                        .and(post.status.eq(BaseStatus.INACTIVE)
+                        ))
+                .orderBy(post.updatedAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.id.count())
+                .from(post).
+                where(
+                        post.member.id.eq(memberId)
+                        .and(post.status.eq(BaseStatus.INACTIVE))
+                )
                 .fetchFirst();
 
         return new PageImpl<>(result, pageable, total);

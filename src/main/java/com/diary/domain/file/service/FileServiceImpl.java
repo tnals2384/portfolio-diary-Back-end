@@ -116,6 +116,27 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public void hardDeleteFiles(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+        if(!CollectionUtils.isEmpty(files)){
+            files.forEach(
+                    file -> {
+                    amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, file.getFilePath().substring(56)));
+                    fileRepository.delete(file);
+                    }
+            );
+        }
+    }
+
+    @Override
+    public void updateFileActive(Post post) {
+        List<File> files = fileRepository.findAllByPost(post);
+        if(!CollectionUtils.isEmpty(files)) {
+            files.forEach(file -> {file.changeStatus(file.getStatus());});
+        }
+    }
+
+    @Override
     @Transactional
     //파일 추가
     public UploadFileResponse addFiles(Member loginMember, Long postId, List<MultipartFile> files) throws IOException {

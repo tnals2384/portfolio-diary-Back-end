@@ -21,4 +21,8 @@ public interface ExperienceService {
     void softDeleteExperiences(Post post);
 
     List<GetExperienceResponse> getExperiences(Post post);
+
+    void hardDeleteExperiences(Post post);
+
+    void updateExperienceActive(Post post);
 }

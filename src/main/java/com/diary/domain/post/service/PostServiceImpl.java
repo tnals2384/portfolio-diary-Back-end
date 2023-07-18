@@ -127,26 +127,38 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public GetPagePostsResponse getAllPostsWithPaging(Member loginMember, String orderType, Pageable pageable) {
-
         Page<Post> list = postRepository.findAllWithPaging(loginMember.getId(), orderType, pageable);
+        return toPagePostsResponse(loginMember, list);
 
-        int totalPages = list.getTotalPages();
-        int totalPosts = (int) list.getTotalElements(); //long형을 int형으로 받음
+    }
+
+    //삭제된 모든 Post 페이징 조회
+    @Override
+    @Transactional
+    public GetPagePostsResponse getAllRemovePostsWithPaging(Member loginMember, Pageable pageable) {
+        Page<Post> posts = postRepository.findInActiveAllWithPaging(loginMember.getId(), pageable);
+        return toPagePostsResponse(loginMember, posts);
+
+    }
+
+    // Post -> GetPagePostsResponse로 변환
+    public GetPagePostsResponse toPagePostsResponse(Member member, Page<Post> posts){
+        int totalPages = posts.getTotalPages();
+        int totalPosts = (int) posts.getTotalElements(); //long형을 int형으로 받음
 
         //받아온 Page<Post> list를 GetPostsResponse dto 형식으로 변환하여 list에 저장
-        List<GetPostsResponse> pagePosts = list.map(
+        List<GetPostsResponse> pagePosts = posts.map(
                 post -> GetPostsResponse.of(
                         post.getId(),
                         post.getTitle(),
                         post.getBeginAt(),
                         post.getFinishAt(),
-                        tagService.findTagName(loginMember, post.getId())
+                        tagService.findTagName(member, post.getId())
                 )
         ).getContent();
 
         //totalPage, totalPosts 를 포함하여 GetPagePostsResponse 로 반환
         return GetPagePostsResponse.of(pagePosts, totalPages, totalPosts);
-
     }
 
     @Override
@@ -163,5 +175,29 @@ public class PostServiceImpl implements PostService {
         List<GetPostsResponse> pagePosts = responses.getContent();
 
         return GetPagePostsResponse.of(pagePosts, totalPages,totalPosts);
+    }
+
+    @Override
+    public void hardDeletePost(Member loginMember, Long postId) {
+        //postId로 post 조회
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+        if (loginMember.equals(post.getMember())) {
+            experienceService.hardDeleteExperiences(post);
+            tagService.hardDeleteTags(post);
+            fileService.hardDeleteFiles(post);
+            postRepository.delete(post);
+        }
+    }
+
+    @Override
+    public void updatePostActive(Member member, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+        if(member.equals(post.getMember())){
+            post.changeStatus(post.getStatus());
+            tagService.updateTagActive(post);
+            fileService.updateFileActive(post);
+            experienceService.updateExperienceActive(post);
+        }
+
     }
 }

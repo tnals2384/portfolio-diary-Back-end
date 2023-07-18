@@ -38,10 +38,8 @@ public class BaseEntity {
      * @param status
      */
     public void changeStatus(BaseStatus status) {
-        if (status.equals(BaseStatus.ACTIVE))
-            this.status = BaseStatus.INACTIVE;
-        else
-            this.status=BaseStatus.ACTIVE;
+        updateUpdatedAt(LocalDateTime.now());
+        this.status = (status == BaseStatus.ACTIVE) ? BaseStatus.INACTIVE : BaseStatus.ACTIVE;
     }
 
 }

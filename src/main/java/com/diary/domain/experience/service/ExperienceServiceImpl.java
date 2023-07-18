@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -138,6 +135,22 @@ public class ExperienceServiceImpl implements ExperienceService {
             }
         }
         return responses;
+    }
+
+    @Override
+    public void hardDeleteExperiences(Post post) {
+        List<Experience> experiences = experienceRepository.findAllByPost(post);
+        if (experiences != null) {
+            experiences.forEach(experience -> experienceRepository.delete(experience));
+        }
+    }
+
+    @Override
+    public void updateExperienceActive(Post post) {
+        List<Experience> experiences = experienceRepository.findAllByPost(post);
+        if (experiences != null) {
+            experiences.forEach(experience -> experience.changeStatus(experience.getStatus()));
+        }
     }
 
 
