@@ -142,4 +142,12 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Override
+    public void updateTagActive(Post post) {
+        List<Tag> tags = tagRepository.findAllByPost(post);
+        if (!CollectionUtils.isEmpty(tags)) {
+            tags.forEach(tag -> tag.changeStatus(tag.getStatus()));
+        }
+    }
+
 }

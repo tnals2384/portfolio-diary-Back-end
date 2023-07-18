@@ -24,4 +24,6 @@ public interface PostService {
     GetPagePostsResponse findPostsByTagNames(Member loginMember, List<String> tagNames, String orderType, Pageable pageable);
 
     void hardDeletePost(Member loginMember, Long postId);
+
+    void updatePostActive(Member member, Long postId);
 }

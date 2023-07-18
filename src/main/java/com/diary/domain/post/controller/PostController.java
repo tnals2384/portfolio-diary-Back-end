@@ -102,4 +102,11 @@ public class PostController {
         return new BaseResponse<>("완전히 삭제되었습니다.");
     }
 
+    @PostMapping("active/posts/{postId}")
+    public BaseResponse<String> updatePostActive(@MemberId Long memberId, @PathVariable @Valid Long postId){
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        postService.updatePostActive(loginMember, postId);
+        return new BaseResponse<>("복원 되었습니다.");
+    }
+
 }

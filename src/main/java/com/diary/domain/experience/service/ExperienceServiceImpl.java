@@ -145,5 +145,13 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
     }
 
+    @Override
+    public void updateExperienceActive(Post post) {
+        List<Experience> experiences = experienceRepository.findAllByPost(post);
+        if (experiences != null) {
+            experiences.forEach(experience -> experience.changeStatus(experience.getStatus()));
+        }
+    }
+
 
 }

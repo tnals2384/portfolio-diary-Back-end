@@ -188,4 +188,16 @@ public class PostServiceImpl implements PostService {
             postRepository.delete(post);
         }
     }
+
+    @Override
+    public void updatePostActive(Member member, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND));
+        if(member.equals(post.getMember())){
+            post.changeStatus(post.getStatus());
+            tagService.updateTagActive(post);
+            fileService.updateFileActive(post);
+            experienceService.updateExperienceActive(post);
+        }
+
+    }
 }

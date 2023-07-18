@@ -19,4 +19,6 @@ public interface TagService {
     List<String> findTagName(Member member, Long postId);
 
     void hardDeleteTags(Post post);
+
+    void updateTagActive(Post post);
 }

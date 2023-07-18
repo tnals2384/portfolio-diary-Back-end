@@ -18,4 +18,5 @@ public interface FileService {
     void softDeleteFiles(Post post);
     void hardDeleteFiles(Post post);
 
+    void updateFileActive(Post post);
 }
