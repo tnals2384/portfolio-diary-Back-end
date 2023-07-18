@@ -143,7 +143,7 @@ public class FileServiceImpl implements FileService {
         if (!CollectionUtils.isEmpty(files)) {
             for (File file : files) {
                 getFileResponses.add(
-                        GetFileResponse.of(file.getOrigFileName(), file.getFilePath())
+                        GetFileResponse.of(file.getId(),file.getOrigFileName(), file.getFilePath())
                 );
             }
         }
