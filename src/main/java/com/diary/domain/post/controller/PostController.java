@@ -77,7 +77,7 @@ public class PostController {
     @GetMapping("in-active/posts")
     public BaseResponse<GetPagePostsResponse> getAllRemovePosts(
             @MemberId Long memberId,
-            @PageableDefault(size = 10, sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
         return new BaseResponse<>(postService.getAllRemovePostsWithPaging(loginMember, pageable));
