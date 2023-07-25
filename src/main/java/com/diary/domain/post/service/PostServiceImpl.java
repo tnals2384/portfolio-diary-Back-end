@@ -1,5 +1,6 @@
 package com.diary.domain.post.service;
 
+import com.diary.common.base.BaseStatus;
 import com.diary.common.exception.ErrorCode;
 import com.diary.common.exception.RestApiException;
 import com.diary.domain.experience.model.dto.GetExperienceResponse;
@@ -107,6 +108,10 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(ErrorCode.NOT_FOUND)
         );
+
+        if(post.getStatus() == BaseStatus.INACTIVE) {
+            throw new RestApiException(ErrorCode.METHOD_NOT_ALLOWED);
+        }
 
         //login한 member와 post의 member가 다르면 error
         if (!loginMember.equals(post.getMember())) {
