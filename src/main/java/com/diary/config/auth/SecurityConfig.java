@@ -34,8 +34,14 @@ public class SecurityConfig {
                 .formLogin().disable()
                 //요청에 대한 인가 처리 설정
                 .authorizeRequests()
-                .antMatchers("/api/**").hasRole(MemberRole.USER.name())
-                .anyRequest().permitAll() // 개발 완료 전까지 모두 접속 가능하도록
+                .antMatchers("/oauth2/**").permitAll()
+                .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name())
+                .and()
+                .logout()
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true) // 세션 무효화
+                .deleteCookies("JSESSIONID") // 세션 쿠키 삭제
+                .permitAll()
                 .and()
                 //OAuth 2.0 기반 인증을 처리하기위해 Provider와의 연동을 지원
                 .oauth2Login()
