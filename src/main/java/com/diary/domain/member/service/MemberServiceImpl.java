@@ -24,4 +24,10 @@ public class MemberServiceImpl implements MemberService {
 
         return new FindMyPageUserResponse(nickname, daysSinceSignUp);
     }
+
+    @Override
+    public void deleteUser(Long memberId) {
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(() -> new RestApiException(ErrorCode.NO_LOGIN_USER));
+        memberRepository.delete(loginMember);
+    }
 }

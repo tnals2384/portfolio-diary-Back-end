@@ -8,6 +8,7 @@ import com.diary.domain.member.model.Member;
 import com.diary.domain.member.model.dto.FindMyPageUserResponse;
 import com.diary.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,12 @@ public class MemberController {
     @GetMapping("/mypages")
     public BaseResponse<FindMyPageUserResponse> findMyPageUser(@MemberId Long memberId){
         return new BaseResponse<>(memberService.findMyPageUser(memberId));
+    }
+
+    @DeleteMapping("/members")
+    public BaseResponse<String> deleteUser(@MemberId Long memberId){
+        memberService.deleteUser(memberId);
+        return new BaseResponse<>("탈퇴가 완료되었습니다.");
     }
 
 }
