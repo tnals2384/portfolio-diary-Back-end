@@ -40,22 +40,23 @@ public class SecurityConfig {
                 .logout()
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true) // 세션 무효화
-                .deleteCookies("JSESSIONID") // 세션 쿠키 삭제
+                .deleteCookies("JSESSIONID","accessToken") // 세션 쿠키 삭제
                 .permitAll()
                 .and()
                 //OAuth 2.0 기반 인증을 처리하기위해 Provider와의 연동을 지원
                 .oauth2Login()
+                .defaultSuccessUrl("/login-success")
                 .userInfoEndpoint()
                 //OAuth 2.0 인증이 처리되는데 사용될 사용자 서비스를 지정하는 메서드
-                .userService(oAuthService);
-
+                .userService(oAuthService)
+        ;
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
