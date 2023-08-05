@@ -9,14 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -52,7 +48,7 @@ public class OAuthController {
         cookie.setPath("/"); // 모든 경로에서 쿠키 접근 가능하도록 설정
         response.addCookie(cookie);
         // 리다이렉트 URL을 생성하고 토큰을 포함시킴
-        String redirectUrl = "http://localhost:3000";
+        String redirectUrl = "http://ec2-54-79-176-242.ap-southeast-2.compute.amazonaws.com:8080";
 
         response.sendRedirect(redirectUrl);
     }
